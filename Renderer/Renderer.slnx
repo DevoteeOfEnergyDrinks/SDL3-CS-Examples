@@ -1,4 +1,19 @@
 <Solution>
   <Project Path="Ex01Clear/Ex01Clear.csproj" />
   <Project Path="Ex02Primitives/Ex02Primitives.csproj" />
+  <Project Path="Ex03Lines/Ex03Lines.csproj" />
+  <Project Path="Ex04Points/Ex04Points.csproj" />
+  <Project Path="Ex05Rectangles/Ex05Rectangles.csproj" />
+  <Project Path="Ex06Textures/Ex06Textures.csproj" />
+  <Project Path="Ex07StreamingTextures/Ex07StreamingTextures.csproj" />
+  <Project Path="Ex08RotatingTextures/Ex08RotatingTextures.csproj" />
+  <Project Path="Ex09ScalingTextures/Ex09ScalingTextures.csproj" />
+  <Project Path="Ex10Geometry/Ex10Geometry.csproj" />
+  <Project Path="Ex11ColorMods/Ex11ColorMods.csproj" />
+  <Project Path="Ex12ViewPort/Ex12ViewPort.csproj" />
+  <Project Path="Ex13Cliprect/Ex13Cliprect.csproj" />
+  <Project Path="Ex14ReadPixels/Ex14ReadPixels.csproj" />
+  <Project Path="Ex15DebugText/Ex15DebugText.csproj" />
+  <Project Path="Ex16AffineTextures/Ex16AffineTextures.csproj" />
+  <Project Path="Ex17Blending/Ex17Blending.csproj" />
 </Solution>
