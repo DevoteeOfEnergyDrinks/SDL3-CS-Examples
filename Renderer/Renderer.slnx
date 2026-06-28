@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Ex01Clear/Ex01Clear.csproj" />
+  <Project Path="Ex02Primitives/Ex02Primitives.csproj" />
+</Solution>
