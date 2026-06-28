@@ -1,10 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
+
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <SelfContained>true</SelfContained>
+    <PublishAot>true</PublishAot>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
+
   </PropertyGroup>
+
+  <ItemGroup>
+
+    <ProjectReference Include="../../SDL3-CS/SDL3-CS.csproj" />
+    <Using Include="SDL3.SDL" Static="true" />
+
+    <None Include="../Runtimes/$(RuntimeIdentifier)/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
+  </ItemGroup>
 
 </Project>
