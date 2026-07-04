@@ -18,8 +18,7 @@
     <Project Path="Renderer/Ex16AffineTextures/Ex16AffineTextures.csproj" />
     <Project Path="Renderer/Ex17Blending/Ex17Blending.csproj" />
   </Folder>
-
-
+  
   <Project Path="SDL3-CS/SDL3-CS.csproj" />
 
 </Solution>
