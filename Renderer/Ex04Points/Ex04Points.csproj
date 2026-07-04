@@ -1,30 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+    <PropertyGroup>
 
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
 
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
 
-    <SelfContained>true</SelfContained>
-    <PublishAot>true</PublishAot>
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>full</TrimMode>
+        <SelfContained>true</SelfContained>
+        <PublishAot>true</PublishAot>
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>full</TrimMode>
 
-  </PropertyGroup>
+        <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>
+        <DebugSymbols Condition="'$(Configuration)' == 'Release'">false</DebugSymbols>
 
-  <ItemGroup>
+        <PublishDir>../../Build/Renderer</PublishDir>
 
-    <ProjectReference Include="../../SDL3-CS/SDL3-CS.csproj" />
-    <Using Include="SDL3.SDL" Static="true" />
+    </PropertyGroup>
 
-    <None Include="../Runtimes/$(RuntimeIdentifier)/**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <ItemGroup>
 
-  </ItemGroup>
+        <ProjectReference Include="../../SDL3-CS/SDL3-CS.csproj" />
+        <Using Include="SDL3.SDL" Static="true" />
+
+        <None Include="../../Runtimes/$(RuntimeIdentifier)/**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+
+    </ItemGroup>
 
 </Project>
