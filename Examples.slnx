@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/Renderer/">
+    <Project Path="Renderer/Ex01Clear/Ex01Clear.csproj" />
+    <Project Path="Renderer/Ex02Primitives/Ex02Primitives.csproj" />
+    <Project Path="Renderer/Ex03Lines/Ex03Lines.csproj" />
+    <Project Path="Renderer/Ex04Points/Ex04Points.csproj" />
+    <Project Path="Renderer/Ex05Rectangles/Ex05Rectangles.csproj" />
+    <Project Path="Renderer/Ex06Textures/Ex06Textures.csproj" />
+    <Project Path="Renderer/Ex07StreamingTextures/Ex07StreamingTextures.csproj" />
+    <Project Path="Renderer/Ex08RotatingTextures/Ex08RotatingTextures.csproj" />
+    <Project Path="Renderer/Ex09ScalingTextures/Ex09ScalingTextures.csproj" />
+    <Project Path="Renderer/Ex10Geometry/Ex10Geometry.csproj" />
+    <Project Path="Renderer/Ex11ColorMods/Ex11ColorMods.csproj" />
+    <Project Path="Renderer/Ex12ViewPort/Ex12ViewPort.csproj" />
+    <Project Path="Renderer/Ex13Cliprect/Ex13Cliprect.csproj" />
+    <Project Path="Renderer/Ex14ReadPixels/Ex14ReadPixels.csproj" />
+    <Project Path="Renderer/Ex15DebugText/Ex15DebugText.csproj" />
+    <Project Path="Renderer/Ex16AffineTextures/Ex16AffineTextures.csproj" />
+    <Project Path="Renderer/Ex17Blending/Ex17Blending.csproj" />
+  </Folder>
+
+
+  <Project Path="SDL3-CS/SDL3-CS.csproj" />
+
+</Solution>
