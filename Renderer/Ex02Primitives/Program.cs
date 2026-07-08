@@ -19,6 +19,7 @@ internal class Program
     // These variables hold the memory addresses of the window and the renderer.
     public static IntPtr window = IntPtr.Zero;
     public static IntPtr renderer = IntPtr.Zero;
+    public static FPoint[] points = new FPoint[500];
 
 
     private static void Main(string[] args)
@@ -44,14 +45,16 @@ internal class Program
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
-        SetAppMetadata("Example Renderer Clear", "1.0", "com.example.renderer-clear");
+        int i;
+
+        SetAppMetadata("Example Renderer Primitives", "1.0", "com.example.renderer-primitives");
 
         if (!Init(InitFlags.Video))
         {
             Log($"Couldn't initialize SDL: {GetError()}");
             return AppResult.Failure;
         }
-        
+
         if (!CreateWindowAndRenderer("examples/renderer/clear", 640, 480, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
@@ -59,6 +62,13 @@ internal class Program
         }
 
         SetRenderLogicalPresentation(renderer, 640, 480, RendererLogicalPresentation.Letterbox);
+
+        // set up some random points
+        for (i = 0; i < points.Length; i++)
+        {
+            points[i].X = (RandF() * 440.0f) + 100.0f;
+            points[i].Y = (RandF() * 280.0f) + 100.0f;
+        }
 
         return AppResult.Continue;  // carry on with the program!
     }
@@ -78,20 +88,38 @@ internal class Program
     // This function runs once per frame, and is the heart of the program.
     static AppResult AppIterate(nint appstate)
     {
-        double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
+        FRect rect;
 
-        // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
-        float red = (float)(0.5f + 0.5f * Math.Sin(now));
-        float green = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 2 / 3));
-        float blue = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 4 / 3));
+        // as you can see from this, rendering draws over whatever was drawn before it.
+        SetRenderDrawColor(renderer, 33, 33, 33, 255);  // dark grey, full alpha
+        RenderClear(renderer); // start with a blank canvas.
 
-        SetRenderDrawColorFloat(renderer, red, green, blue, 1.0f);  // new color, full alpha
+        // draw a filled rectangle in the middle of the canvas.
+        SetRenderDrawColor(renderer, 0, 0, 255, 255); // blue, full alpha
+        rect.X = 100;
+        rect.Y = 100;
+        rect.W = 440;
+        rect.H = 280;
+        RenderFillRect(renderer, in rect);
 
-        // clear the window to the draw color.
-        RenderClear(renderer);
+        // draw some points across the canvas.
+        SetRenderDrawColor(renderer, 255, 0, 0, 255); // red, full alpha
+        RenderPoints(renderer, points, points.Length);
 
-        // put the newly-cleared rendering on the screen.
-        RenderPresent(renderer);
+        // draw a unfilled rectangle in-set a little bit.
+        SetRenderDrawColor(renderer, 0, 255, 0, 255); // green, full alpha
+        rect.X += 30;
+        rect.Y += 30;
+        rect.W -= 60;
+        rect.H -= 60;
+        RenderRect(renderer, in rect);
+
+        // draw two lines in an X across the wole canvas.
+        SetRenderDrawColor(renderer, 255, 255, 0, 255); // yellow, full alpha
+        RenderLine(renderer, 0, 0, 640, 480);
+        RenderLine(renderer, 0, 480, 640, 0);
+
+        RenderPresent(renderer); // put it all on the screen!
 
         return AppResult.Continue;  // carry on with the program!
     }
