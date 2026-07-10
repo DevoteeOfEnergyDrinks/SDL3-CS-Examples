@@ -30,6 +30,11 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
 
+        <None Include="sample.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+
     </ItemGroup>
 
 </Project>
