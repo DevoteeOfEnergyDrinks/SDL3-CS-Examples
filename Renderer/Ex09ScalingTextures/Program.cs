@@ -6,6 +6,8 @@
 * This code is public domain. Feel free to use it for any purpose!
 * This code is a port of the official SDL3 examples
 */
+using System.Runtime.InteropServices;
+
 internal class Program
 {
     // These delegates map our C# methods to the internal SDL3 lifecycle events.
@@ -19,6 +21,13 @@ internal class Program
     // These variables hold the memory addresses of the window and the renderer.
     public static IntPtr window = IntPtr.Zero;
     public static IntPtr renderer = IntPtr.Zero;
+    public static IntPtr texture = IntPtr.Zero;
+
+    static int textureWidth = 0;
+    static int textureHeight = 0;
+
+    const int WindowWidth = 640;
+    const int WindowHeigth = 480;
 
 
     private static void Main(string[] args)
@@ -44,21 +53,52 @@ internal class Program
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
-        SetAppMetadata("Example Renderer Clear", "1.0", "com.example.renderer-clear");
+        IntPtr surfacePtr = IntPtr.Zero;
+        string pngPath;
+
+        SetAppMetadata("Example Renderer Scaling Textures", "1.0", "com.example.renderer-scaling-textures");
 
         if (!Init(InitFlags.Video))
         {
             Log($"Couldn't initialize SDL: {GetError()}");
             return AppResult.Failure;
         }
-        
-        if (!CreateWindowAndRenderer("examples/renderer/clear", 640, 480, WindowFlags.Resizable, out window, out renderer))
+
+        if (!CreateWindowAndRenderer("examples/renderer/scaling-textures", WindowWidth, WindowHeigth, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
-        SetRenderLogicalPresentation(renderer, 640, 480, RendererLogicalPresentation.Letterbox);
+        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeigth, RendererLogicalPresentation.Letterbox);
+
+        // Textures are pixel data that we upload to the video hardware for fast drawing. 
+        // Lots of 2D engines refer to these as "sprites." 
+        // We'll do a static texture (upload once, draw many times) with data from a bitmap file.
+
+        // SDL_Surface is pixel data the CPU can access. SDL_Texture is pixel data the GPU can access.
+        // Load a .png into a surface, move it to a texture from there. 
+        pngPath = GetBasePath() + "assets/sample.png";  // build a string of the full file path
+        surfacePtr = LoadPNG(pngPath);
+        if (surfacePtr == IntPtr.Zero)
+        {
+            Log($"Couldn't load bitmap: {GetError()}");
+            return AppResult.Failure;
+        }
+
+        Surface surface = Marshal.PtrToStructure<Surface>(surfacePtr);
+
+        textureWidth = surface.Width;
+        textureHeight = surface.Height;
+
+        texture = CreateTextureFromSurface(renderer, surfacePtr);
+        if (texture == IntPtr.Zero)
+        {
+            Log($"Couldn't create static texture: {GetError()}");
+            return AppResult.Failure;
+        }
+
+        DestroySurface(surfacePtr);  // done with this, the texture has a copy of the pixels now.
 
         return AppResult.Continue;  // carry on with the program!
     }
@@ -78,21 +118,27 @@ internal class Program
     // This function runs once per frame, and is the heart of the program.
     static AppResult AppIterate(nint appstate)
     {
+        // Adding a delay to stop very high FPS
         Delay(6);
-        double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
+        FRect dstRect;
+        ulong now = GetTicks();
 
-        // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
-        float red = (float)(0.5f + 0.5f * Math.Sin(now));
-        float green = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 2 / 3));
-        float blue = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 4 / 3));
+        // we'll have the texture grow and shrink over a few seconds.
+        float direction = ((now % 2000) >= 1000) ? 1.0f : -1.0f;
+        float scale = ((float)(((int)(now % 1000)) - 500) / 500.0f) * direction;
 
-        SetRenderDrawColorFloat(renderer, red, green, blue, 1.0f);  // new color, full alpha
+        // as you can see from this, rendering draws over whatever was drawn before it.
+        SetRenderDrawColor(renderer, 0, 0, 0, byte.MaxValue);  // black, full alpha
+        RenderClear(renderer);  // start with a blank canvas.
 
-        // clear the window to the draw color.
-        RenderClear(renderer);
+        /* center this one and make it grow and shrink. */
+        dstRect.W = (float)textureWidth + (textureWidth * scale);
+        dstRect.H = (float)textureHeight + (textureHeight * scale);
+        dstRect.X = (WindowWidth - dstRect.W) / 2.0f;
+        dstRect.Y = (WindowHeigth - dstRect.H) / 2.0f;
+        RenderTexture(renderer, texture, IntPtr.Zero, in dstRect);
 
-        // put the newly-cleared rendering on the screen.
-        RenderPresent(renderer);
+        RenderPresent(renderer);  // put it all on the screen!
 
         return AppResult.Continue;  // carry on with the program!
     }
@@ -101,6 +147,7 @@ internal class Program
     // This function runs once at shutdown.
     static void AppQuit(nint appstate, AppResult result)
     {
+        DestroyTexture(texture);
         // SDL will clean up the window/renderer for us.
     }
 }
