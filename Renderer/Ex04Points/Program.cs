@@ -107,6 +107,7 @@ internal class Program
     // This function runs once per frame, and is the heart of the program.
     static AppResult AppIterate(nint appstate)
     {
+        Delay(6);
         ulong now = GetTicks();
         float elapsed = ((float)(now - lastTime)) / 1000.0f;  // seconds since last iteration
         int i;

@@ -92,6 +92,7 @@ internal class Program
     // This function runs once per frame, and is the heart of the program.
     static AppResult AppIterate(nint appstate)
     {
+        Delay(6);
         FRect dstRect;
         ulong now = GetTicks();
         IntPtr surfacePtr;

@@ -88,6 +88,7 @@ internal class Program
     // This function runs once per frame, and is the heart of the program.
     static AppResult AppIterate(nint appstate)
     {
+        Delay(6);
         FRect rect;
 
         // as you can see from this, rendering draws over whatever was drawn before it.

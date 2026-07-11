@@ -81,6 +81,7 @@ internal class Program
     // This function runs once per frame, and is the heart of the program.
     static AppResult AppIterate(nint appstate)
     {
+        Delay(6);
         FRect[] rects = new FRect[16];
         ulong now = GetTicks();
         int i;
