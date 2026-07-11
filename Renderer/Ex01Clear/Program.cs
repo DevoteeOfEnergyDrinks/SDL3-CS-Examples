@@ -78,6 +78,7 @@ internal class Program
     // This function runs once per frame, and is the heart of the program.
     static AppResult AppIterate(nint appstate)
     {
+        Delay(6);
         double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
 
         // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
