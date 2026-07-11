@@ -139,7 +139,7 @@ internal class Program
         // rotate it around the center of the texture; you can rotate it from a different point, too!
         center.X = textureWidth / 2.0f;
         center.Y = textureHeight / 2.0f;
-        RenderTextureRotated(renderer, texture, IntPtr.Zero, dstRect, rotation, center, FlipMode.None);
+        RenderTextureRotated(renderer, texture, IntPtr.Zero, in dstRect, rotation, in center, FlipMode.None);
 
         RenderPresent(renderer);  // put it all on the screen!
 
