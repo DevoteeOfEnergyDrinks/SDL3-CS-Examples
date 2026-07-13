@@ -2156,8 +2156,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_SetRenderViewport"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_SetRenderViewportRect(IntPtr renderer, Rect rect);
-    private delegate bool SetRenderViewportRectNativeDelegate(IntPtr renderer, Rect rect);
+    private static partial bool SDL_SetRenderViewportRect(IntPtr renderer, in Rect rect);
+    private delegate bool SetRenderViewportRectNativeDelegate(IntPtr renderer, in Rect rect);
     private static SetRenderViewportRectNativeDelegate SetRenderViewportRectNativeFunction = SDL_SetRenderViewportRect;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_SetRenderViewport(SDL_Renderer *renderer, const SDL_Rect *rect);</code>
@@ -2177,7 +2177,7 @@ public static partial class SDL
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="GetRenderViewport"/>
     /// <seealso cref="RenderViewportSet"/>
-    public static bool SetRenderViewport(IntPtr renderer, Rect rect)
+    public static bool SetRenderViewport(IntPtr renderer, in Rect rect)
     {
         return SetRenderViewportRectNativeFunction(renderer, rect);
     }
