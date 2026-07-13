@@ -122,7 +122,7 @@ internal class Program
         Delay(6);
         ulong now = GetTicks();
 
-        // we'll have the triangle grow and shrink over a few seconds. */
+        // we'll have the triangle grow and shrink over a few seconds.
         float direction = ((now % 2000) >= 1000) ? 1.0f : -1.0f;
         float scale = ((float)(((int)(now % 1000)) - 500) / 500.0f) * direction;
         float size = 200.0f + (200.0f * scale);
@@ -171,15 +171,15 @@ internal class Program
         RenderGeometry(renderer, texture, vertices, 3, IntPtr.Zero, 0);
 
         // Did that only draw half of the texture? You can do multiple triangles sharing some vertices,
-        // using indices, to get the whole thing on the screen: */
+        // using indices, to get the whole thing on the screen:
 
-        // Let's just move this over so it doesn't overlap... */
+        // Let's just move this over so it doesn't overlap...
         for (i = 0; i < 3; i++)
         {
             vertices[i].Position.X += 450;
         }
 
-        /* we need one more vertex, since the two triangles can share two of them. */
+        // we need one more vertex, since the two triangles can share two of them.
         vertices[3].Position.X = 600.0f;
         vertices[3].Position.Y = 150.0f;
         vertices[3].Color.R = vertices[3].Color.G = vertices[3].Color.B = vertices[3].Color.A = 1.0f;
@@ -193,7 +193,7 @@ internal class Program
             RenderGeometry(renderer, texture, vertices, 4, indices, indices.Length);
         }
 
-        RenderPresent(renderer);  // put it all on the screen! */
+        RenderPresent(renderer);  // put it all on the screen!
 
         return AppResult.Continue;
     }
