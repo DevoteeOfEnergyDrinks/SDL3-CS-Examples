@@ -1,11 +1,11 @@
 ﻿/*
-* This example code creates an SDL window and renderer, and then clears the
-* window to a different color every frame, so you'll effectively get a window
-* that's smoothly fading between colors.
-*
-* This code is public domain. Feel free to use it for any purpose!
-* This code is a port of the official SDL3 examples
-*/
+ * This example creates an SDL window and renderer, and then draws some
+ * textures to it every frame, adjusting their color.
+ *
+ * This code is public domain. Feel free to use it for any purpose!
+ */
+using System.Runtime.InteropServices;
+
 internal class Program
 {
     // These delegates map our C# methods to the internal SDL3 lifecycle events.
@@ -19,6 +19,13 @@ internal class Program
     // These variables hold the memory addresses of the window and the renderer.
     public static IntPtr window = IntPtr.Zero;
     public static IntPtr renderer = IntPtr.Zero;
+    public static IntPtr texture = IntPtr.Zero;
+
+    static int textureWidth = 0;
+    static int textureHeight = 0;
+
+    const int WindowWidth = 640;
+    const int WindowHeigth = 480;
 
 
     private static void Main(string[] args)
@@ -44,21 +51,52 @@ internal class Program
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
-        SetAppMetadata("Example Renderer Clear", "1.0", "com.example.renderer-clear");
+        IntPtr surfacePtr = IntPtr.Zero;
+        string pngPath;
+
+        SetAppMetadata("Example Renderer Color Mods", "1.0", "com.example.renderer-color-mods");
 
         if (!Init(InitFlags.Video))
         {
             Log($"Couldn't initialize SDL: {GetError()}");
             return AppResult.Failure;
         }
-        
-        if (!CreateWindowAndRenderer("examples/renderer/clear", 640, 480, WindowFlags.Resizable, out window, out renderer))
+
+        if (!CreateWindowAndRenderer("examples/renderer/color-mods", WindowWidth, WindowHeigth, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
-        SetRenderLogicalPresentation(renderer, 640, 480, RendererLogicalPresentation.Letterbox);
+        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeigth, RendererLogicalPresentation.Letterbox);
+
+        // Textures are pixel data that we upload to the video hardware for fast drawing. 
+        // Lots of 2D engines refer to these as "sprites." 
+        // We'll do a static texture (upload once, draw many times) with data from a bitmap file.
+
+        // SDL_Surface is pixel data the CPU can access. SDL_Texture is pixel data the GPU can access.
+        // Load a .png into a surface, move it to a texture from there. 
+        pngPath = GetBasePath() + "assets/sample.png";  // build a string of the full file path
+        surfacePtr = LoadPNG(pngPath);
+        if (surfacePtr == IntPtr.Zero)
+        {
+            Log($"Couldn't load bitmap: {GetError()}");
+            return AppResult.Failure;
+        }
+
+        Surface surface = Marshal.PtrToStructure<Surface>(surfacePtr);
+
+        textureWidth = surface.Width;
+        textureHeight = surface.Height;
+
+        texture = CreateTextureFromSurface(renderer, surfacePtr);
+        if (texture == IntPtr.Zero)
+        {
+            Log($"Couldn't create static texture: {GetError()}");
+            return AppResult.Failure;
+        }
+
+        DestroySurface(surfacePtr);  // done with this, the texture has a copy of the pixels now.
 
         return AppResult.Continue;  // carry on with the program!
     }
@@ -78,29 +116,59 @@ internal class Program
     // This function runs once per frame, and is the heart of the program.
     static AppResult AppIterate(nint appstate)
     {
-        Delay(6);
-        double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
+        Delay(8);
+        FRect dstRect;
+        double now = ((double)GetTicks()) / 1000.0;  // convert from milliseconds to seconds.
+        // choose the modulation values for the center texture. The sine wave trick makes it fade between colors smoothly.
+        float red = (float)(0.5 + 0.5 * Math.Sin(now));
+        float green = (float)(0.5 + 0.5 * Math.Sin(now + Math.PI * 2 / 3));
+        float blue = (float)(0.5 + 0.5 * Math.Sin(now + Math.PI * 4 / 3));
 
-        // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
-        float red = (float)(0.5f + 0.5f * Math.Sin(now));
-        float green = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 2 / 3));
-        float blue = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 4 / 3));
+        // as you can see from this, rendering draws over whatever was drawn before it.
+        SetRenderDrawColor(renderer, 0, 0, 0, byte.MaxValue);  // black, full alpha
+        RenderClear(renderer);  // start with a blank canvas.
 
-        SetRenderDrawColorFloat(renderer, red, green, blue, 1.0f);  // new color, full alpha
+        // Just draw the static texture a few times. 
+        // You can think of it like a stamp, there isn't a limit to the number of times you can draw with it.
 
-        // clear the window to the draw color.
-        RenderClear(renderer);
+        // Color modulation multiplies each pixel's red, green, and blue intensities by the mod values,
+        // so multiplying by 1.0f will leave a color intensity alone, 
+        // 0.0f will shut off that color completely, etc.
 
-        // put the newly-cleared rendering on the screen.
-        RenderPresent(renderer);
+        // top left; let's make this one blue!
+        dstRect.X = 0.0f;
+        dstRect.Y = 0.0f;
+        dstRect.W = (float)textureWidth;
+        dstRect.H = (float)textureHeight;
+        SetTextureColorModFloat(texture, 0.0f, 0.0f, 1.0f);  // kill all red and green.
+        RenderTexture(renderer, texture, IntPtr.Zero, in dstRect);
 
-        return AppResult.Continue;  // carry on with the program!
+        // center this one, and have it cycle through red/green/blue modulations.
+        dstRect.X = ((float)(WindowWidth - textureWidth)) / 2.0f;
+        dstRect.Y = ((float)(WindowHeigth - textureHeight)) / 2.0f;
+        dstRect.W = (float)textureWidth;
+        dstRect.H = (float)textureHeight;
+        SetTextureColorModFloat(texture, red, green, blue);
+        RenderTexture(renderer, texture, IntPtr.Zero, in dstRect);
+
+        // bottom right; let's make this one red!
+        dstRect.X = (float)(WindowWidth - textureWidth);
+        dstRect.Y = (float)(WindowHeigth - textureHeight);
+        dstRect.W = (float)textureWidth;
+        dstRect.H = (float)textureHeight;
+        SetTextureColorModFloat(texture, 1.0f, 0.0f, 0.0f);  // kill all green and blue.
+        RenderTexture(renderer, texture, IntPtr.Zero, dstRect);
+
+        RenderPresent(renderer);  // put it all on the screen!
+
+        return AppResult.Continue;
     }
 
 
     // This function runs once at shutdown.
     static void AppQuit(nint appstate, AppResult result)
     {
+        DestroyTexture(texture);
         // SDL will clean up the window/renderer for us.
     }
 }
