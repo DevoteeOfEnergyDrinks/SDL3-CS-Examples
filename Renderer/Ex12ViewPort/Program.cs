@@ -25,7 +25,7 @@ internal class Program
     static int textureHeight = 0;
 
     const int WindowWidth = 640;
-    const int WindowHeigth = 480;
+    const int WindowHeight = 480;
 
 
     private static void Main(string[] args)
@@ -62,13 +62,13 @@ internal class Program
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/viewport", WindowWidth, WindowHeigth, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/renderer/viewport", WindowWidth, WindowHeight, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
-        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeigth, RendererLogicalPresentation.Letterbox);
+        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeight, RendererLogicalPresentation.Letterbox);
 
         // Textures are pixel data that we upload to the video hardware for fast drawing. 
         // Lots of 2D engines refer to these as "sprites." 
@@ -132,23 +132,23 @@ internal class Program
         viewport.X = 0;
         viewport.Y = 0;
         viewport.W = WindowWidth / 2;
-        viewport.H = WindowHeigth / 2;
+        viewport.H = WindowHeight / 2;
         SetRenderViewport(renderer, IntPtr.Zero);  // IntPtr.Zero means "use the whole window"
         RenderTexture(renderer, texture, IntPtr.Zero, in dstRect);
 
         // top right quarter of the window.
         viewport.X = WindowWidth / 2;
-        viewport.Y = WindowHeigth / 2;
+        viewport.Y = WindowHeight / 2;
         viewport.W = WindowWidth / 2;
-        viewport.H = WindowHeigth / 2;
+        viewport.H = WindowHeight / 2;
         SetRenderViewport(renderer, in viewport);
         RenderTexture(renderer, texture, IntPtr.Zero, in dstRect);
 
         // bottom 20% of the window. Note it clips the width!
         viewport.X = 0;
-        viewport.Y = WindowHeigth - (WindowHeigth / 5);
+        viewport.Y = WindowHeight - (WindowHeight / 5);
         viewport.W = WindowWidth / 5;
-        viewport.H = WindowHeigth / 5;
+        viewport.H = WindowHeight / 5;
         SetRenderViewport(renderer, in viewport);
         RenderTexture(renderer, texture, IntPtr.Zero, in dstRect);
 
@@ -156,7 +156,7 @@ internal class Program
         viewport.X = 100;
         viewport.Y = 200;
         viewport.W = WindowWidth;
-        viewport.H = WindowHeigth;
+        viewport.H = WindowHeight;
         SetRenderViewport(renderer, in viewport);
         dstRect.Y = -50;
         RenderTexture(renderer, texture, IntPtr.Zero, in dstRect);

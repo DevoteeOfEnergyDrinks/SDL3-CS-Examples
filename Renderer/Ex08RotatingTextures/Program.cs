@@ -27,7 +27,7 @@ internal class Program
     static int textureHeight = 0;
 
     const int WindowWidth = 640;
-    const int WindowHeigth = 480;
+    const int WindowHeight = 480;
 
 
     private static void Main(string[] args)
@@ -64,13 +64,13 @@ internal class Program
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/rotating-textures", WindowWidth, WindowHeigth, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/renderer/rotating-textures", WindowWidth, WindowHeight, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
-        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeigth, RendererLogicalPresentation.Letterbox);
+        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeight, RendererLogicalPresentation.Letterbox);
 
         // Textures are pixel data that we upload to the video hardware for fast drawing. Lots of 2D
         // engines refer to these as "sprites." We'll do a static texture (upload once, draw many times) with data from a bitmap file.
@@ -133,7 +133,7 @@ internal class Program
 
         // Center this one, and draw it with some rotation so it spins!
         dstRect.X = ((float)(WindowWidth - textureWidth)) / 2.0f;
-        dstRect.Y = ((float)(WindowHeigth - textureHeight)) / 2.0f;
+        dstRect.Y = ((float)(WindowHeight - textureHeight)) / 2.0f;
         dstRect.W = (float)textureWidth;
         dstRect.H = (float)textureHeight;
         // rotate it around the center of the texture; you can rotate it from a different point, too!

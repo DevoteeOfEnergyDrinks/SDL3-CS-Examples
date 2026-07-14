@@ -27,7 +27,7 @@ internal class Program
     static int textureHeight = 0;
 
     const int WindowWidth = 640;
-    const int WindowHeigth = 480;
+    const int WindowHeight = 480;
 
 
     private static void Main(string[] args)
@@ -64,13 +64,13 @@ internal class Program
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/geometry", WindowWidth, WindowHeigth, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/renderer/geometry", WindowWidth, WindowHeight, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
-        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeigth, RendererLogicalPresentation.Letterbox);
+        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeight, RendererLogicalPresentation.Letterbox);
 
         // Textures are pixel data that we upload to the video hardware for fast drawing. 
         // Lots of 2D engines refer to these as "sprites." 
@@ -137,15 +137,15 @@ internal class Program
         // Draw a single triangle with a different color at each vertex. Center this one and make it grow and shrink.
         // You always draw triangles with this, but you can string triangles together to form polygons.
         vertices[0].Position.X = ((float)WindowWidth) / 2.0f;
-        vertices[0].Position.Y = (((float)WindowHeigth) - size) / 2.0f;
+        vertices[0].Position.Y = (((float)WindowHeight) - size) / 2.0f;
         vertices[0].Color.R = 1.0f;
         vertices[0].Color.A = 1.0f;
         vertices[1].Position.X = (((float)WindowWidth) + size) / 2.0f;
-        vertices[1].Position.Y = (((float)WindowHeigth) + size) / 2.0f;
+        vertices[1].Position.Y = (((float)WindowHeight) + size) / 2.0f;
         vertices[1].Color.G = 1.0f;
         vertices[1].Color.A = 1.0f;
         vertices[2].Position.X = (((float)WindowWidth) - size) / 2.0f;
-        vertices[2].Position.Y = (((float)WindowHeigth) + size) / 2.0f;
+        vertices[2].Position.Y = (((float)WindowHeight) + size) / 2.0f;
         vertices[2].Color.B = 1.0f;
         vertices[2].Color.A = 1.0f;
 

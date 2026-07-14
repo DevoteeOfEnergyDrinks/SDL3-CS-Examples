@@ -25,7 +25,7 @@ internal class Program
     public static ulong lastTime = 0;
 
     const int WindowWidth = 640;
-    const int WindowHeigth = 480;
+    const int WindowHeight = 480;
     const int ClipRectSize = 250;
     const int ClipRectSpeed = 200; // pixels per second
 
@@ -67,13 +67,13 @@ internal class Program
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/cliprect", WindowWidth, WindowHeigth, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/renderer/cliprect", WindowWidth, WindowHeight, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
-        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeigth, RendererLogicalPresentation.Letterbox);
+        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeight, RendererLogicalPresentation.Letterbox);
 
         clipRectDirection.X = clipRectDirection.Y = 1.0f;
 
@@ -151,9 +151,9 @@ internal class Program
             clipRectPosition.Y = -ClipRectSize;
             clipRectDirection.Y = 1.0f;
         }
-        else if (clipRectPosition.Y >= WindowHeigth)
+        else if (clipRectPosition.Y >= WindowHeight)
         {
-            clipRectPosition.Y = WindowHeigth - 1;
+            clipRectPosition.Y = WindowHeight - 1;
             clipRectDirection.Y = -1.0f;
         }
         SetRenderClipRect(renderer, in cliprect);

@@ -27,7 +27,7 @@ internal class Program
     static int textureHeight = 0;
 
     const int WindowWidth = 640;
-    const int WindowHeigth = 480;
+    const int WindowHeight = 480;
 
 
     private static void Main(string[] args)
@@ -64,13 +64,13 @@ internal class Program
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/scaling-textures", WindowWidth, WindowHeigth, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/renderer/scaling-textures", WindowWidth, WindowHeight, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
-        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeigth, RendererLogicalPresentation.Letterbox);
+        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeight, RendererLogicalPresentation.Letterbox);
 
         // Textures are pixel data that we upload to the video hardware for fast drawing. 
         // Lots of 2D engines refer to these as "sprites." 
@@ -135,7 +135,7 @@ internal class Program
         dstRect.W = (float)textureWidth + (textureWidth * scale);
         dstRect.H = (float)textureHeight + (textureHeight * scale);
         dstRect.X = (WindowWidth - dstRect.W) / 2.0f;
-        dstRect.Y = (WindowHeigth - dstRect.H) / 2.0f;
+        dstRect.Y = (WindowHeight - dstRect.H) / 2.0f;
         RenderTexture(renderer, texture, IntPtr.Zero, in dstRect);
 
         RenderPresent(renderer);  // put it all on the screen!

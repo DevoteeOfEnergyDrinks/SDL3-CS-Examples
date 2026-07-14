@@ -25,7 +25,7 @@ internal class Program
     static int textureHeight = 0;
 
     const int WindowWidth = 640;
-    const int WindowHeigth = 480;
+    const int WindowHeight = 480;
 
 
     private static void Main(string[] args)
@@ -62,13 +62,13 @@ internal class Program
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/color-mods", WindowWidth, WindowHeigth, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/renderer/color-mods", WindowWidth, WindowHeight, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
-        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeigth, RendererLogicalPresentation.Letterbox);
+        SetRenderLogicalPresentation(renderer, WindowWidth, WindowHeight, RendererLogicalPresentation.Letterbox);
 
         // Textures are pixel data that we upload to the video hardware for fast drawing. 
         // Lots of 2D engines refer to these as "sprites." 
@@ -145,7 +145,7 @@ internal class Program
 
         // center this one, and have it cycle through red/green/blue modulations.
         dstRect.X = ((float)(WindowWidth - textureWidth)) / 2.0f;
-        dstRect.Y = ((float)(WindowHeigth - textureHeight)) / 2.0f;
+        dstRect.Y = ((float)(WindowHeight - textureHeight)) / 2.0f;
         dstRect.W = (float)textureWidth;
         dstRect.H = (float)textureHeight;
         SetTextureColorModFloat(texture, red, green, blue);
@@ -153,7 +153,7 @@ internal class Program
 
         // bottom right; let's make this one red!
         dstRect.X = (float)(WindowWidth - textureWidth);
-        dstRect.Y = (float)(WindowHeigth - textureHeight);
+        dstRect.Y = (float)(WindowHeight - textureHeight);
         dstRect.W = (float)textureWidth;
         dstRect.H = (float)textureHeight;
         SetTextureColorModFloat(texture, 1.0f, 0.0f, 0.0f);  // kill all green and blue.
