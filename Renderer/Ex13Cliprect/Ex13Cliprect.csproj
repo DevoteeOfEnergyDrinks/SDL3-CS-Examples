@@ -30,6 +30,11 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
 
+        <None Include="assets/**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+
     </ItemGroup>
 
 </Project>
