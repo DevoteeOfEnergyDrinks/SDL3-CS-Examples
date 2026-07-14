@@ -3593,8 +3593,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineDownRect(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, IntPtr right, in FRect down);
-    private delegate bool RenderTextureAffineDownRectNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, IntPtr right, in FRect down);
+    private static partial bool SDL_RenderTextureAffineDownRect(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, IntPtr right, in FPoint down);
+    private delegate bool RenderTextureAffineDownRectNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, IntPtr right, in FPoint down);
     private static RenderTextureAffineDownRectNativeDelegate RenderTextureAffineDownRectNativeFunction = SDL_RenderTextureAffineDownRect;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -3620,7 +3620,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, IntPtr right, in FRect down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, IntPtr right, in FPoint down)
     {
         return RenderTextureAffineDownRectNativeFunction(renderer, texture, srcrect, origin, right, in down);
     }
@@ -3629,8 +3629,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineRightRect(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FRect right, IntPtr down);
-    private delegate bool RenderTextureAffineRightRectNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FRect right, IntPtr down);
+    private static partial bool SDL_RenderTextureAffineRightRect(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FPoint right, IntPtr down);
+    private delegate bool RenderTextureAffineRightRectNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FPoint right, IntPtr down);
     private static RenderTextureAffineRightRectNativeDelegate RenderTextureAffineRightRectNativeFunction = SDL_RenderTextureAffineRightRect;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -3656,7 +3656,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FRect right, IntPtr down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FPoint right, IntPtr down)
     {
         return RenderTextureAffineRightRectNativeFunction(renderer, texture, srcrect, origin, in right, down);
     }
@@ -3665,8 +3665,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineRightDownRects(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FRect right, in FRect down);
-    private delegate bool RenderTextureAffineRightDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FRect right, in FRect down);
+    private static partial bool SDL_RenderTextureAffineRightDownRects(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FPoint right, in FPoint down);
+    private delegate bool RenderTextureAffineRightDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FPoint right, in FPoint down);
     private static RenderTextureAffineRightDownRectsNativeDelegate RenderTextureAffineRightDownRectsNativeFunction = SDL_RenderTextureAffineRightDownRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -3692,7 +3692,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FRect right, in FRect down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr origin, in FPoint right, in FPoint down)
     {
         return RenderTextureAffineRightDownRectsNativeFunction(renderer, texture, srcrect, origin, in right, in down);
     }
@@ -3701,8 +3701,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineOriginRect(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, IntPtr right, IntPtr down);
-    private delegate bool RenderTextureAffineOriginRectNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, IntPtr right, IntPtr down);
+    private static partial bool SDL_RenderTextureAffineOriginRect(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, IntPtr right, IntPtr down);
+    private delegate bool RenderTextureAffineOriginRectNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, IntPtr right, IntPtr down);
     private static RenderTextureAffineOriginRectNativeDelegate RenderTextureAffineOriginRectNativeFunction = SDL_RenderTextureAffineOriginRect;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -3728,7 +3728,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, IntPtr right, IntPtr down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, IntPtr right, IntPtr down)
     {
         return RenderTextureAffineOriginRectNativeFunction(renderer, texture, srcrect, in origin, right, down);
     }
@@ -3737,8 +3737,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineOriginDownRects(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, IntPtr right, in FRect down);
-    private delegate bool RenderTextureAffineOriginDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, IntPtr right, in FRect down);
+    private static partial bool SDL_RenderTextureAffineOriginDownRects(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, IntPtr right, in FPoint down);
+    private delegate bool RenderTextureAffineOriginDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, IntPtr right, in FPoint down);
     private static RenderTextureAffineOriginDownRectsNativeDelegate RenderTextureAffineOriginDownRectsNativeFunction = SDL_RenderTextureAffineOriginDownRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -3764,7 +3764,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, IntPtr right, in FRect down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, IntPtr right, in FPoint down)
     {
         return RenderTextureAffineOriginDownRectsNativeFunction(renderer, texture, srcrect, in origin, right, in down);
     }
@@ -3773,8 +3773,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineOriginRightRects(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, in FRect right, IntPtr down);
-    private delegate bool RenderTextureAffineOriginRightRectsNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, in FRect right, IntPtr down);
+    private static partial bool SDL_RenderTextureAffineOriginRightRects(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, in FPoint right, IntPtr down);
+    private delegate bool RenderTextureAffineOriginRightRectsNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, in FPoint right, IntPtr down);
     private static RenderTextureAffineOriginRightRectsNativeDelegate RenderTextureAffineOriginRightRectsNativeFunction = SDL_RenderTextureAffineOriginRightRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -3800,7 +3800,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, in FRect right, IntPtr down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, in FPoint right, IntPtr down)
     {
         return RenderTextureAffineOriginRightRectsNativeFunction(renderer, texture, srcrect, in origin, in right, down);
     }
@@ -3809,8 +3809,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineOriginRightDownRects(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, in FRect right, in FRect down);
-    private delegate bool RenderTextureAffineOriginRightDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, in FRect right, in FRect down);
+    private static partial bool SDL_RenderTextureAffineOriginRightDownRects(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, in FPoint right, in FPoint down);
+    private delegate bool RenderTextureAffineOriginRightDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, in FPoint right, in FPoint down);
     private static RenderTextureAffineOriginRightDownRectsNativeDelegate RenderTextureAffineOriginRightDownRectsNativeFunction = SDL_RenderTextureAffineOriginRightDownRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -3836,7 +3836,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FRect origin, in FRect right, in FRect down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, IntPtr srcrect, in FPoint origin, in FPoint right, in FPoint down)
     {
         return RenderTextureAffineOriginRightDownRectsNativeFunction(renderer, texture, srcrect, in origin, in right, in down);
     }
@@ -3881,8 +3881,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineSourceDownRects(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, IntPtr right, in FRect down);
-    private delegate bool RenderTextureAffineSourceDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, IntPtr right, in FRect down);
+    private static partial bool SDL_RenderTextureAffineSourceDownRects(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, IntPtr right, in FPoint down);
+    private delegate bool RenderTextureAffineSourceDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, IntPtr right, in FPoint down);
     private static RenderTextureAffineSourceDownRectsNativeDelegate RenderTextureAffineSourceDownRectsNativeFunction = SDL_RenderTextureAffineSourceDownRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -3908,7 +3908,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, IntPtr right, in FRect down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, IntPtr right, in FPoint down)
     {
         return RenderTextureAffineSourceDownRectsNativeFunction(renderer, texture, in srcrect, origin, right, in down);
     }
@@ -3917,8 +3917,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineSourceRightRects(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FRect right, IntPtr down);
-    private delegate bool RenderTextureAffineSourceRightRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FRect right, IntPtr down);
+    private static partial bool SDL_RenderTextureAffineSourceRightRects(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FPoint right, IntPtr down);
+    private delegate bool RenderTextureAffineSourceRightRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FPoint right, IntPtr down);
     private static RenderTextureAffineSourceRightRectsNativeDelegate RenderTextureAffineSourceRightRectsNativeFunction = SDL_RenderTextureAffineSourceRightRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -3944,7 +3944,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FRect right, IntPtr down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FPoint right, IntPtr down)
     {
         return RenderTextureAffineSourceRightRectsNativeFunction(renderer, texture, in srcrect, origin, in right, down);
     }
@@ -3953,8 +3953,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineSourceRightDownRects(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FRect right, in FRect down);
-    private delegate bool RenderTextureAffineSourceRightDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FRect right, in FRect down);
+    private static partial bool SDL_RenderTextureAffineSourceRightDownRects(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FPoint right, in FPoint down);
+    private delegate bool RenderTextureAffineSourceRightDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FPoint right, in FPoint down);
     private static RenderTextureAffineSourceRightDownRectsNativeDelegate RenderTextureAffineSourceRightDownRectsNativeFunction = SDL_RenderTextureAffineSourceRightDownRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -3980,7 +3980,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FRect right, in FRect down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, IntPtr origin, in FPoint right, in FPoint down)
     {
         return RenderTextureAffineSourceRightDownRectsNativeFunction(renderer, texture, in srcrect, origin, in right, in down);
     }
@@ -3989,8 +3989,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineSourceOriginRects(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, IntPtr right, IntPtr down);
-    private delegate bool RenderTextureAffineSourceOriginRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, IntPtr right, IntPtr down);
+    private static partial bool SDL_RenderTextureAffineSourceOriginRects(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, IntPtr right, IntPtr down);
+    private delegate bool RenderTextureAffineSourceOriginRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, IntPtr right, IntPtr down);
     private static RenderTextureAffineSourceOriginRectsNativeDelegate RenderTextureAffineSourceOriginRectsNativeFunction = SDL_RenderTextureAffineSourceOriginRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -4016,7 +4016,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, IntPtr right, IntPtr down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, IntPtr right, IntPtr down)
     {
         return RenderTextureAffineSourceOriginRectsNativeFunction(renderer, texture, in srcrect, in origin, right, down);
     }
@@ -4025,8 +4025,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineSourceOriginDownRects(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, IntPtr right, in FRect down);
-    private delegate bool RenderTextureAffineSourceOriginDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, IntPtr right, in FRect down);
+    private static partial bool SDL_RenderTextureAffineSourceOriginDownRects(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, IntPtr right, in FPoint down);
+    private delegate bool RenderTextureAffineSourceOriginDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, IntPtr right, in FPoint down);
     private static RenderTextureAffineSourceOriginDownRectsNativeDelegate RenderTextureAffineSourceOriginDownRectsNativeFunction = SDL_RenderTextureAffineSourceOriginDownRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -4052,7 +4052,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, IntPtr right, in FRect down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, IntPtr right, in FPoint down)
     {
         return RenderTextureAffineSourceOriginDownRectsNativeFunction(renderer, texture, in srcrect, in origin, right, in down);
     }
@@ -4061,8 +4061,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineSourceOriginRightRects(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, in FRect right, IntPtr down);
-    private delegate bool RenderTextureAffineSourceOriginRightRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, in FRect right, IntPtr down);
+    private static partial bool SDL_RenderTextureAffineSourceOriginRightRects(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, in FPoint right, IntPtr down);
+    private delegate bool RenderTextureAffineSourceOriginRightRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, in FPoint right, IntPtr down);
     private static RenderTextureAffineSourceOriginRightRectsNativeDelegate RenderTextureAffineSourceOriginRightRectsNativeFunction = SDL_RenderTextureAffineSourceOriginRightRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -4088,7 +4088,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, in FRect right, IntPtr down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, in FPoint right, IntPtr down)
     {
         return RenderTextureAffineSourceOriginRightRectsNativeFunction(renderer, texture, in srcrect, in origin, in right, down);
     }
@@ -4097,8 +4097,8 @@ public static partial class SDL
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_RenderTextureAffine"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     [return: MarshalAs(UnmanagedType.I1)]
-    private static partial bool SDL_RenderTextureAffineSourceOriginRightDownRects(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, in FRect right, in FRect down);
-    private delegate bool RenderTextureAffineSourceOriginRightDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, in FRect right, in FRect down);
+    private static partial bool SDL_RenderTextureAffineSourceOriginRightDownRects(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, in FPoint right, in FPoint down);
+    private delegate bool RenderTextureAffineSourceOriginRightDownRectsNativeDelegate(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, in FPoint right, in FPoint down);
     private static RenderTextureAffineSourceOriginRightDownRectsNativeDelegate RenderTextureAffineSourceOriginRightDownRectsNativeFunction = SDL_RenderTextureAffineSourceOriginRightDownRects;
 
     /// <code>extern SDL_DECLSPEC bool SDLCALL SDL_RenderTextureAffine(SDL_Renderer *renderer, SDL_Texture *texture, const SDL_FRect *srcrect, const SDL_FPoint *origin, const SDL_FPoint *right, const SDL_FPoint *down);</code>
@@ -4124,7 +4124,7 @@ public static partial class SDL
     /// <threadsafety>You may only call this function from the main thread.</threadsafety>
     /// <since>This function is available since SDL 3.2.0</since>
     /// <seealso cref="RenderTexture(nint, nint, nint, nint)"/>
-    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, in FRect origin, in FRect right, in FRect down)
+    public static bool RenderTextureAffine(IntPtr renderer, IntPtr texture, in FRect srcrect, in FPoint origin, in FPoint right, in FPoint down)
     {
         return RenderTextureAffineSourceOriginRightDownRectsNativeFunction(renderer, texture, in srcrect, in origin, in right, in down);
     }
