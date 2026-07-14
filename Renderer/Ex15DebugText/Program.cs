@@ -1,11 +1,9 @@
 ﻿/*
-* This example code creates an SDL window and renderer, and then clears the
-* window to a different color every frame, so you'll effectively get a window
-* that's smoothly fading between colors.
-*
-* This code is public domain. Feel free to use it for any purpose!
-* This code is a port of the official SDL3 examples
-*/
+ * This example creates an SDL window and renderer, and then draws some text
+ * using SDL_RenderDebugText() every frame.
+ *
+ * This code is public domain. Feel free to use it for any purpose!
+ */
 internal class Program
 {
     // These delegates map our C# methods to the internal SDL3 lifecycle events.
@@ -19,6 +17,9 @@ internal class Program
     // These variables hold the memory addresses of the window and the renderer.
     public static IntPtr window = IntPtr.Zero;
     public static IntPtr renderer = IntPtr.Zero;
+
+    const int WindowWidth = 640;
+    const int WindowHeight = 480;
 
 
     private static void Main(string[] args)
@@ -44,15 +45,15 @@ internal class Program
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
-        SetAppMetadata("Example Renderer Clear", "1.0", "com.example.renderer-clear");
+        SetAppMetadata("Example Renderer Debug Text", "1.0", "com.example.renderer-debug-text");
 
         if (!Init(InitFlags.Video))
         {
             Log($"Couldn't initialize SDL: {GetError()}");
             return AppResult.Failure;
         }
-        
-        if (!CreateWindowAndRenderer("examples/renderer/clear", 640, 480, WindowFlags.Resizable, out window, out renderer))
+
+        if (!CreateWindowAndRenderer("examples/renderer/debug-text", 640, 480, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
@@ -79,20 +80,34 @@ internal class Program
     static AppResult AppIterate(nint appstate)
     {
         Delay(6);
-        double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
+        int charsize = DebugTextFontCharacterSize;
 
-        // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
-        float red = (float)(0.5f + 0.5f * Math.Sin(now));
-        float green = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 2 / 3));
-        float blue = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 4 / 3));
+        // as you can see from this, rendering draws over whatever was drawn before it.
+        SetRenderDrawColor(renderer, 0, 0, 0, byte.MaxValue);  // black, full alpha 
+        RenderClear(renderer);  // start with a blank canvas.
 
-        SetRenderDrawColorFloat(renderer, red, green, blue, 1.0f);  // new color, full alpha
+        SetRenderDrawColor(renderer, 255, 255, 255, byte.MaxValue);  // white, full alpha
+        RenderDebugText(renderer, 272, 100, "Hello world!");
+        RenderDebugText(renderer, 224, 150, "This is some debug text.");
 
-        // clear the window to the draw color.
-        RenderClear(renderer);
+        SetRenderDrawColor(renderer, 51, 102, 255, byte.MaxValue);  // light blue, full alpha
+        RenderDebugText(renderer, 184, 200, "You can do it in different colors.");
+        SetRenderDrawColor(renderer, 255, 255, 255, byte.MaxValue);  // white, full alpha
 
-        // put the newly-cleared rendering on the screen.
-        RenderPresent(renderer);
+        SetRenderScale(renderer, 4.0f, 4.0f);
+        RenderDebugText(renderer, 14, 65, "It can be scaled.");
+        SetRenderScale(renderer, 1.0f, 1.0f);
+        RenderDebugText(renderer, 64, 350, "This only does ASCII chars. So this laughing emoji won't draw: 🤣");
+
+        RenderDebugTextFormat
+        (
+            renderer,
+            ((float)(WindowWidth - (charsize * 46)) / 2),
+            400,
+            $"(This program has been running for {GetTicks() / 1000} seconds.)"
+        );
+
+        RenderPresent(renderer);  //put it all on the screen!
 
         return AppResult.Continue;  // carry on with the program!
     }
