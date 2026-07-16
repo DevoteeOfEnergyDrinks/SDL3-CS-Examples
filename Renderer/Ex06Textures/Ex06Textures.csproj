@@ -20,21 +20,27 @@
 
     </PropertyGroup>
 
+    <!-- Project references and global usings -->
     <ItemGroup>
-
         <ProjectReference Include="../../SDL3-CS/SDL3-CS.csproj" />
         <Using Include="SDL3.SDL" Static="true" />
+    </ItemGroup>
 
+    <!-- Runtime files -->
+    <ItemGroup>
         <None Include="../../Runtimes/$(RuntimeIdentifier)/**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </None>
+    </ItemGroup>
 
-        <None Include="assets/sample.png">
+    <!-- External assets -->
+    <ItemGroup>
+        <Content Include="../Assets/**/*">
+            <Link>Assets/%(RecursiveDir)%(Filename)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>
