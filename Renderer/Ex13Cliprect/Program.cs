@@ -85,7 +85,7 @@ internal class Program
 
         // SDL_Surface is pixel data the CPU can access. SDL_Texture is pixel data the GPU can access.
         // Load a .png into a surface, move it to a texture from there. 
-        pngPath = GetBasePath() + "assets/sample.png";  // build a string of the full file path
+        pngPath = GetBasePath() + "Assets/sample.png";  // build a string of the full file path
         surfacePtr = LoadPNG(pngPath);
         if (surfacePtr == IntPtr.Zero)
         {
