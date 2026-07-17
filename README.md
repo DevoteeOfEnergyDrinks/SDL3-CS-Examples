@@ -16,4 +16,4 @@ To compile all examples at once:
 ## Technical Specifications
 - **Wrapper:** [SDL3-CS](https://github.com/edwardgushchin/SDL3-CS)
 - **Original Source:** [SDL3 Examples](https://github.com/libsdl-org/SDL/tree/main/examples)
-- **Native Library:** SDL3 v3.4.10 (Binaries for Windows and Linux are bundled).
+- **Native Library:** SDL3 v3.4.12 (Binaries for Windows and Linux are bundled).
