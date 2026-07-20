@@ -190,7 +190,7 @@ public static partial class SDL
         }
         finally
         {
-            if(ptr != IntPtr.Zero) Free(ptr);
+            if (ptr != IntPtr.Zero) Free(ptr);
         }
     }
 
@@ -1559,6 +1559,13 @@ public static partial class SDL
         }
     }
 
+    public static unsafe bool PutAudioStreamData(IntPtr stream, ReadOnlySpan<float> samples)
+    {
+        fixed (float* pSamples = samples)
+        {
+            return SDL_PutAudioStreamData(stream, (IntPtr)pSamples, samples.Length * sizeof(float));
+        }
+    }
 
     [ExcludeFromCodeCoverage]
     [DllImport(SDLLibrary, EntryPoint = "SDL_PutAudioStreamPlanarData"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]

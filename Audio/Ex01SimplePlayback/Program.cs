@@ -1,11 +1,10 @@
 ﻿/*
-* This example code creates an SDL window and renderer, and then clears the
-* window to a different color every frame, so you'll effectively get a window
-* that's smoothly fading between colors.
-*
-* This code is public domain. Feel free to use it for any purpose!
-* This code is a port of the official SDL3 examples
-*/
+ * This example code creates a simple audio stream for playing sound, and
+ * generates a sine wave sound effect for it to play as time goes on. This
+ * is the simplest way to get up and running with procedural sound.
+ *
+ * This code is public domain. Feel free to use it for any purpose!
+ */
 internal class Program
 {
     // These delegates map our C# methods to the internal SDL3 lifecycle events.
@@ -19,7 +18,8 @@ internal class Program
     // These variables hold the memory addresses of the window and the renderer.
     public static IntPtr window = IntPtr.Zero;
     public static IntPtr renderer = IntPtr.Zero;
-
+    public static IntPtr stream = IntPtr.Zero;
+    public static int currentSineSample = 0;
 
     private static void Main(string[] args)
     {
@@ -44,21 +44,40 @@ internal class Program
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
-        SetAppMetadata("Example Renderer Clear", "1.0", "com.example.renderer-clear");
+        AudioSpec spec;
 
-        if (!Init(InitFlags.Video))
+        SetAppMetadata("Example Audio Simple Playback", "1.0", "com.example.audio-simple-playback");
+
+        if (!Init(InitFlags.Video | InitFlags.Audio))
         {
             Log($"Couldn't initialize SDL: {GetError()}");
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/clear", 640, 480, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/audio-playback", 640, 480, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
         SetRenderLogicalPresentation(renderer, 640, 480, RendererLogicalPresentation.Letterbox);
+
+        // We're just playing a single thing here, so we'll use the simplified option.
+        // We are always going to feed audio in as mono, float32 data at 8000Hz.
+        // The stream will convert it to whatever the hardware wants on the other side.
+        spec.Channels = 1;
+        // A Check for the endiness of our system
+        spec.Format = BitConverter.IsLittleEndian ? AudioFormat.AudioF32LE : AudioFormat.AudioF32BE;
+        spec.Freq = 8000;
+        stream = OpenAudioDeviceStream(AudioDeviceDefaultPlayback, in spec, null, IntPtr.Zero);
+        if (stream == IntPtr.Zero)
+        {
+            Log($"Couldn't create audio stream: {GetError()}");
+            return AppResult.Failure;
+        }
+
+        // SDL_OpenAudioDeviceStream starts the device paused. You have to tell it to start!
+        ResumeAudioStreamDevice(stream);
 
         return AppResult.Continue;  // carry on with the program!
     }
@@ -79,19 +98,34 @@ internal class Program
     static AppResult AppIterate(nint appstate)
     {
         Delay(6);
-        double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
+        // see if we need to feed the audio stream more data yet.
+        // We're being lazy here, but if there's less than half a second queued, generate more.
+        // A sine wave is unchanging audio--easy to stream--but for video games, you'll want
+        // to generate significantly _less_ audio ahead of time!
+        int minimum_audio = (8000 * sizeof(float)) / 2;  // 8000 float samples per second. Half of that.
+        if (GetAudioStreamQueued(stream) < minimum_audio)
+        {
+            float[] samples = new float[512];  // this will feed 512 samples each frame until we get to our maximum.
+            int i;
 
-        // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
-        float red = (float)(0.5f + 0.5f * Math.Sin(now));
-        float green = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 2 / 3));
-        float blue = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 4 / 3));
+            // generate a 440Hz pure tone
+            for (i = 0; i < samples.Length; i++)
+            {
+                int freq = 440;
+                float phase = currentSineSample * freq / 8000.0f;
+                samples[i] = MathF.Sin(phase * 2 * MathF.PI);
+                currentSineSample++;
+            }
 
-        SetRenderDrawColorFloat(renderer, red, green, blue, 1.0f);  // new color, full alpha
+            // wrapping around to avoid floating-point errors
+            currentSineSample %= 8000;
 
-        // clear the window to the draw color.
+            // feed the new data to the stream. It will queue at the end, and trickle out as the hardware needs more data.
+            PutAudioStreamData(stream, samples);
+        }
+
+        // we're not doing anything with the renderer, so just blank it out.
         RenderClear(renderer);
-
-        // put the newly-cleared rendering on the screen.
         RenderPresent(renderer);
 
         return AppResult.Continue;  // carry on with the program!
