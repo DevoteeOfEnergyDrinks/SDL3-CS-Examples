@@ -1,4 +1,12 @@
 <Solution>
+  
+  <Folder Name="/Audio/">
+    <Project Path="Audio/Ex01SimplePlayback/Ex01SimplePlayback.csproj" />
+    <Project Path="Audio/Ex02SimplePlaybackCallback/Ex02SimplePlaybackCallback.csproj" />
+    <Project Path="Audio/Ex03LoadWav/Ex03LoadWav.csproj" />
+    <Project Path="Audio/Ex04MultipleStreams/Ex04MultipleStreams.csproj" />
+    <Project Path="Audio/Ex05PlanarData/Ex05PlanarData.csproj" />
+  </Folder>
 
   <Folder Name="/Input/">
     <Project Path="Input/Ex01JoystickPolling/Ex01JoystickPolling.csproj" />
