@@ -119,11 +119,6 @@ internal class Program
         // SDL_OpenAudioDeviceStream starts the device paused. You have to tell it to start!
         ResumeAudioStreamDevice(stream);
         
-
-        // Inside your loop or method
-        Console.WriteLine($"Thread ID: {Environment.ProcessId} | Managed ID: {Thread.CurrentThread.ManagedThreadId}");
-        Console.WriteLine(GetCurrentThreadID());
-
         return AppResult.Continue;  // carry on with the program!
     }
 
