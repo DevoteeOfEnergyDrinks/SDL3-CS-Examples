@@ -9,7 +9,6 @@
  * This code is public domain. Feel free to use it for any purpose!
  */
 using System.Runtime.InteropServices;
-using System.Diagnostics;
 internal class Program
 {
     // These delegates map our C# methods to the internal SDL3 lifecycle events.
