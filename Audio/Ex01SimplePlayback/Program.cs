@@ -5,6 +5,8 @@
  *
  * This code is public domain. Feel free to use it for any purpose!
  */
+using System.Runtime.InteropServices;
+
 internal class Program
 {
     // These delegates map our C# methods to the internal SDL3 lifecycle events.
@@ -121,7 +123,8 @@ internal class Program
             currentSineSample %= 8000;
 
             // feed the new data to the stream. It will queue at the end, and trickle out as the hardware needs more data.
-            PutAudioStreamData(stream, samples);
+            Span<byte> bytes = MemoryMarshal.AsBytes<float>(samples.AsSpan());
+            PutAudioStreamData(stream, bytes, bytes.Length);
         }
 
         // we're not doing anything with the renderer, so just blank it out.
