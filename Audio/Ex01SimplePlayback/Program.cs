@@ -9,19 +9,13 @@ using System.Runtime.InteropServices;
 
 internal class Program
 {
+    #region Main
     // These delegates map our C# methods to the internal SDL3 lifecycle events.
     private static readonly AppInitFunc _init = new(AppInit);
     private static readonly AppIterateFunc _iterate = new(AppIterate);
     private static readonly AppEventFunc _event = new(AppEvent);
     private static readonly AppQuitFunc _quit = new(AppQuit);
 
-
-    // We use IntPtr (Integer Pointers) because SDL3 is a C library.
-    // These variables hold the memory addresses of the window and the renderer.
-    public static IntPtr window = IntPtr.Zero;
-    public static IntPtr renderer = IntPtr.Zero;
-    public static IntPtr stream = IntPtr.Zero;
-    public static int currentSineSample = 0;
 
     private static void Main(string[] args)
     {
@@ -41,8 +35,20 @@ internal class Program
     {
         return EnterAppMainCallbacks(argc, argv, _init, _iterate, _event, _quit);
     }
+    #endregion
 
 
+    #region Fields
+    // We use IntPtr (Integer Pointers) because SDL3 is a C library.
+    // These variables hold the memory addresses of the window and the renderer.
+    public static IntPtr window = IntPtr.Zero;
+    public static IntPtr renderer = IntPtr.Zero;
+    public static IntPtr stream = IntPtr.Zero;
+    public static int currentSineSample = 0;
+    #endregion
+
+
+    #region AppInit
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
@@ -83,8 +89,10 @@ internal class Program
 
         return AppResult.Continue;  // carry on with the program!
     }
+    #endregion
 
 
+    #region AppEvent 
     // This function runs when a new event (mouse input, keypresses, etc) occurs.
     static AppResult AppEvent(nint appstate, ref Event evt)
     {
@@ -94,8 +102,10 @@ internal class Program
         }
         return AppResult.Continue;  // carry on with the program!
     }
+    #endregion
 
 
+    #region AppIterate
     // This function runs once per frame, and is the heart of the program.
     static AppResult AppIterate(nint appstate)
     {
@@ -133,11 +143,14 @@ internal class Program
 
         return AppResult.Continue;  // carry on with the program!
     }
+    #endregion
 
 
+    #region AppQuit
     // This function runs once at shutdown.
     static void AppQuit(nint appstate, AppResult result)
     {
         // SDL will clean up the window/renderer for us.
     }
+    #endregion
 }

@@ -4,29 +4,21 @@
  *
  * This code is public domain. Feel free to use it for any purpose!
  *
- * The .wav file is from this site https://mixkit.co/free-stock-music/
- *
- *      Song:   Tech House vibes
- *      by      Alejandro Magaña (A. M.)
- *      converted from mp3 to wav
+ * sample.wav from:
+ * Main Theme (Overture) | The Grand Score by Alexander Nakarada | https://creatorchords.com/
+ * Music promoted by https://www.chosic.com/free-music/all/
+ * Attribution 4.0 International (CC BY 4.0)
+ * https://creativecommons.org/licenses/by/4.0/
  */
-using System.Runtime.InteropServices;
 internal class Program
 {
+    #region Main
     // These delegates map our C# methods to the internal SDL3 lifecycle events.
     private static readonly AppInitFunc _init = new(AppInit);
     private static readonly AppIterateFunc _iterate = new(AppIterate);
     private static readonly AppEventFunc _event = new(AppEvent);
     private static readonly AppQuitFunc _quit = new(AppQuit);
 
-
-    // We use IntPtr (Integer Pointers) because SDL3 is a C library.
-    // These variables hold the memory addresses of the window and the renderer.
-    public static IntPtr window = IntPtr.Zero;
-    public static IntPtr renderer = IntPtr.Zero;
-    public static IntPtr stream = IntPtr.Zero;
-    public static IntPtr wavData;
-    public static uint wavDataLen = 0;
 
     private static void Main(string[] args)
     {
@@ -39,6 +31,7 @@ internal class Program
         RunApp(arguments.Length, arguments, MyRunAppCallback, IntPtr.Zero);
     }
 
+
     // This acts as the entry point for the SDL3 Callback System.
     // For more information about the Callback System being used by none C/C++ languages
     // check this wiki entry: https://wiki.libsdl.org/SDL3/NonstandardStartup
@@ -46,8 +39,21 @@ internal class Program
     {
         return EnterAppMainCallbacks(argc, argv, _init, _iterate, _event, _quit);
     }
+    #endregion
 
 
+    #region Fields
+    // We use IntPtr (Integer Pointers) because SDL3 is a C library.
+    // These variables hold the memory addresses of the window and the renderer.
+    public static IntPtr window = IntPtr.Zero;
+    public static IntPtr renderer = IntPtr.Zero;
+    public static IntPtr stream = IntPtr.Zero;
+    public static IntPtr wavData;
+    public static uint wavDataLen = 0;
+    #endregion
+
+
+    #region AppInit
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
@@ -93,8 +99,10 @@ internal class Program
 
         return AppResult.Continue;  // carry on with the program!
     }
+    #endregion
 
 
+    #region AppEvent
     // This function runs when a new event (mouse input, keypresses, etc) occurs.
     static AppResult AppEvent(nint appstate, ref Event evt)
     {
@@ -104,8 +112,10 @@ internal class Program
         }
         return AppResult.Continue;  // carry on with the program!
     }
+    #endregion
 
 
+    #region AppIterate
     // This function runs once per frame, and is the heart of the program.
     static AppResult AppIterate(nint appstate)
     {
@@ -125,12 +135,15 @@ internal class Program
         RenderPresent(renderer);
         return AppResult.Continue;  // carry on with the program!
     }
+    #endregion
 
 
+    #region AppQuit
     // This function runs once at shutdown.
     static void AppQuit(nint appstate, AppResult result)
     {
         Free(wavData);  // strictly speaking, this isn't necessary because the process is ending, but it's good policy.
         // SDL will clean up the window/renderer for us.
     }
+    #endregion
 }
