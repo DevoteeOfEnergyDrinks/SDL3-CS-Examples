@@ -34,4 +34,13 @@
         </None>
     </ItemGroup>
 
+    <!-- External assets -->
+    <ItemGroup>
+        <Content Include="../Assets/**/*">
+            <Link>Assets/%(RecursiveDir)%(Filename)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
 </Project>
