@@ -36,6 +36,10 @@
     <Project Path="Renderer/Ex17Blending/Ex17Blending.csproj" />
   </Folder>
   
+  <Folder Name="/Storage/">
+    <Project Path="Storage/Ex01User/Ex01User.csproj" />
+  </Folder>
+  
   <Project Path="SDL3-CS/SDL3-CS.csproj" />
 
 </Solution>
