@@ -69,7 +69,7 @@ public static partial class SDL
     /// <since>This function is available since SDL 3.2.0</since>
     public static bool PointInRect(in Point? p, in Rect? r)
     {
-        if (p == null || r == null)  return false;
+        if (p == null || r == null) return false;
 
         return (p.Value.X >= r.Value.X) &&
                (p.Value.X < (r.Value.X + r.Value.W)) &&
@@ -94,7 +94,7 @@ public static partial class SDL
     /// <since>This function is available since SDL 3.0.0.</since>
     public static bool RectEmpty(in Rect? r)
     {
-        return (r is not {W: > 0} || r.Value.H <= 0);
+        return (r is not { W: > 0 } || r.Value.H <= 0);
     }
 
 
@@ -334,9 +334,32 @@ public static partial class SDL
     /// <since>This function is available since SDL 3.2.0</since>
     public static bool PointInRectFloat(in FPoint? p, in FRect? r)
     {
-        return (p.HasValue && r.HasValue &&
+        return p.HasValue && r.HasValue &&
                 p.Value.X >= r.Value.X && p.Value.X < (r.Value.X + r.Value.W) &&
-                p.Value.Y >= r.Value.Y && p.Value.Y < (r.Value.Y + r.Value.H));
+                p.Value.Y >= r.Value.Y && p.Value.Y < (r.Value.Y + r.Value.H);
+    }
+
+
+    /// <code>SDL_FORCE_INLINE bool SDL_PointInRectFloat(const SDL_FPoint *p, const SDL_FRect *r)</code>
+    /// <summary>
+    /// <para>Determine whether a point resides inside a floating point rectangle.</para>
+    /// <para>A point is considered part of a rectangle if both <c>p</c> and <c>r</c> are not <c>null</c>,
+    /// and <c>p</c>'s x and y coordinates are >= to the rectangle's top left corner,
+    /// and &lt;= the rectangle's x+w and y+h. So a 1x1 rectangle considers point
+    /// (0,0) and (0,1) as "inside" and (0,2) as not.</para>
+    /// <para>Note that this is a forced-inline function in a header, and not a public
+    /// API function available in the SDL library (which is to say, the code is
+    /// embedded in the calling program and the linker and dynamic loader will not
+    /// be able to find this function inside SDL itself).</para>
+    /// </summary>
+    /// <param name="p">the point to test.</param>
+    /// <param name="r">the rectangle to test.</param>
+    /// <returns><c>true</c> if <c>p</c> is contained by <c>r</c>, <c>false</c> otherwise.</returns>
+    /// <threadsafety>It is safe to call this function from any thread.</threadsafety>
+    /// <since>This function is available since SDL 3.2.0</since>
+    public static bool PointInRectFloat(in FPoint p, in FRect r)
+    {
+        return (p.X >= r.X) && (p.X <= (r.X + r.W)) && (p.Y >= r.Y) && (p.Y <= (r.Y + r.H));
     }
 
 
