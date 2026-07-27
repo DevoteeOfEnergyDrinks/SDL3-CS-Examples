@@ -1,11 +1,15 @@
 ﻿/*
-* This example code creates an SDL window and renderer, and then clears the
-* window to a different color every frame, so you'll effectively get a window
-* that's smoothly fading between colors.
-*
-* This code is public domain. Feel free to use it for any purpose!
-* This code is a port of the official SDL3 examples
-*/
+ * This example code reads frames from a camera and draws it to the screen.
+ *
+ * This is a very simple approach that is often Good Enough. You can get
+ * fancier with this: multiple cameras, front/back facing cameras on phones,
+ * color spaces, choosing formats and framerates...this just requests
+ * _anything_ and goes with what it is handed.
+ *
+ * This code is public domain. Feel free to use it for any purpose!
+ */
+using System.Runtime.InteropServices;
+
 internal class Program
 {
     #region Main
@@ -43,6 +47,8 @@ internal class Program
     // These variables hold the memory addresses of the window and the renderer.
     public static IntPtr window = IntPtr.Zero;
     public static IntPtr renderer = IntPtr.Zero;
+    public static IntPtr camera = IntPtr.Zero;
+    public static IntPtr texture = IntPtr.Zero;
     #endregion
 
 
@@ -50,21 +56,41 @@ internal class Program
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
-        SetAppMetadata("Example Renderer Clear", "1.0", "com.example.renderer-clear");
+        uint[] devices;
+        int devcount = 0;
 
-        if (!Init(InitFlags.Video))
+        SetAppMetadata("Example Camera Read and Draw", "1.0", "com.example.camera-read-and-draw");
+
+        if (!Init(InitFlags.Video | InitFlags.Camera))
         {
             Log($"Couldn't initialize SDL: {GetError()}");
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/clear", 640, 480, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/camera/read-and-draw", 640, 480, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
-        SetRenderLogicalPresentation(renderer, 640, 480, RendererLogicalPresentation.Letterbox);
+        devices = GetCameras(out devcount)!;
+        if (devices.Length == 0)
+        {
+            Log($"Couldn't enumerate camera devices: {GetError()}");
+            return AppResult.Failure;
+        }
+        else if (devcount == 0)
+        {
+            Log("Couldn't find any camera devices! Please connect a camera and try again.");
+            return AppResult.Failure;
+        }
+
+        camera = OpenCamera(devices[0], IntPtr.Zero);  // just take the first thing we see in any format it wants.
+        if (camera == IntPtr.Zero)
+        {
+            Log($"Couldn't open camera: {GetError()}");
+            return AppResult.Failure;
+        }
 
         return AppResult.Continue;  // carry on with the program!
     }
@@ -79,6 +105,15 @@ internal class Program
         {
             return AppResult.Success;   // end the program, reporting success to the OS.
         }
+        else if (evt.Type == (uint)EventType.CameraDeviceApproved)
+        {
+            Log("Camera use approved by user!");
+        }
+        else if (evt.Type == (uint)EventType.CameraDeviceDenied)
+        {
+            Log("Camera use denied by user!");
+            return AppResult.Failure;
+        }
         return AppResult.Continue;  // carry on with the program!
     }
     #endregion
@@ -89,19 +124,37 @@ internal class Program
     static AppResult AppIterate(nint appstate)
     {
         Delay(6);
-        double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
+        ulong timestampNS = 0;
+        IntPtr framePtr = AcquireCameraFrame(camera, out timestampNS);
 
-        // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
-        float red = (float)(0.5f + 0.5f * Math.Sin(now));
-        float green = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 2 / 3));
-        float blue = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 4 / 3));
+        if (framePtr != IntPtr.Zero)
+        {
+            Surface frame = Marshal.PtrToStructure<Surface>(framePtr);
 
-        SetRenderDrawColorFloat(renderer, red, green, blue, 1.0f);  // new color, full alpha
+            // Some platforms (like Emscripten) don't know _what_ the camera offers
+            // until the user gives permission, so we build the texture and resize
+            // the window when we get a first frame from the camera.
+            if (texture == IntPtr.Zero)
+            {
+                SetWindowSize(window, frame.Width, frame.Height);  // Resize the window to match */
+                SetRenderLogicalPresentation(renderer, frame.Width, frame.Height, RendererLogicalPresentation.Letterbox);
+                texture = CreateTexture(renderer, frame.Format, TextureAccess.Streaming, frame.Width, frame.Height);
+            }
 
-        // clear the window to the draw color.
+            if (texture != IntPtr.Zero)
+            {
+                UpdateTexture(texture, IntPtr.Zero, frame.Pixels, frame.Pitch);
+            }
+            Marshal.StructureToPtr<Surface>(frame, framePtr, true);
+            ReleaseCameraFrame(camera, framePtr);
+        }
+
+        SetRenderDrawColor(renderer, 0x99, 0x99, 0x99, byte.MaxValue);
         RenderClear(renderer);
-
-        // put the newly-cleared rendering on the screen.
+        if (texture != IntPtr.Zero)
+        {   // draw the latest camera frame, if available.
+            RenderTexture(renderer, texture, IntPtr.Zero, IntPtr.Zero);
+        }
         RenderPresent(renderer);
 
         return AppResult.Continue;  // carry on with the program!
@@ -113,6 +166,8 @@ internal class Program
     // This function runs once at shutdown.
     static void AppQuit(nint appstate, AppResult result)
     {
+        CloseCamera(camera);
+        DestroyTexture(texture);
         // SDL will clean up the window/renderer for us.
     }
     #endregion
