@@ -7,6 +7,10 @@
     <Project Path="Audio/Ex04MultipleStreams/Ex04MultipleStreams.csproj" />
     <Project Path="Audio/Ex05PlanarData/Ex05PlanarData.csproj" />
   </Folder>
+  
+  <Folder Name="/Camera/">
+    <Project Path="Camera/Ex01ReadAndDraw/Ex01ReadAndDraw.csproj" />
+  </Folder>
 
   <Folder Name="/Input/">
     <Project Path="Input/Ex01JoystickPolling/Ex01JoystickPolling.csproj" />
