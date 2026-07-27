@@ -1,5 +1,9 @@
 <Solution>
   
+  <Folder Name="/AsynchronousIO/">
+    <Project Path="AsynchronousIO/Ex01LoadBitmaps/Ex01LoadBitmaps.csproj" />
+  </Folder>
+  
   <Folder Name="/Audio/">
     <Project Path="Audio/Ex01SimplePlayback/Ex01SimplePlayback.csproj" />
     <Project Path="Audio/Ex02SimplePlaybackCallback/Ex02SimplePlaybackCallback.csproj" />
