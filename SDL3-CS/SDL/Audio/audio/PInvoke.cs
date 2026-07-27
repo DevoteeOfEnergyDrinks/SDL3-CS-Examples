@@ -908,83 +908,6 @@ public static partial class SDL
 
     [ExcludeFromCodeCoverage]
     [LibraryImport(SDLLibrary, EntryPoint = "SDL_CreateAudioStream"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-    private static partial IntPtr SDL_CreateAudioStream(in AudioSpec srcSpec, IntPtr dstSpec);
-    private delegate IntPtr CreateAudioStreamWithSrcSpec(in AudioSpec srcSpec, IntPtr dstSpec);
-    private static CreateAudioStreamWithSrcSpec CreateAudioStreamWithSrcSpecFunction = SDL_CreateAudioStream;
-
-    /// <code>extern SDL_DECLSPEC SDL_AudioStream * SDLCALL SDL_CreateAudioStream(const SDL_AudioSpec *src_spec, const SDL_AudioSpec *dst_spec);</code>
-    /// <summary>
-    /// <para>Create a new audio stream.</para>
-    /// <para>SDL_AudioStream is an audio conversion interface. You push data as you have
-    /// it, and pull it when you need it; the stream will buffer data as needed.</para>
-    /// <para>Note that <c>srcSpec</c> or <c>dstSpec</c> may be <c>null</c>, but any attempts to put or
-    /// get data from an audio stream will fail until it has valid specs assigned
-    /// to both ends of the stream. Specs can be assigned later through
-    /// <see cref="SetAudioStreamFormat(nint, nint, nint)"/>, or binding the stream to an audio device (which
-    /// will set the format of only the input or output, depending on what kind of
-    /// device the stream was bound to).</para>
-    /// <para>Use <see cref="CreateAudioStream(nint, nint)"/> when either audio spec should be <c>null</c>.</para>
-    /// </summary>
-    /// <param name="srcSpec">the format details of the input audio.</param>
-    /// <param name="dstSpec">the format details of the output audio.</param>
-    /// <returns>a new audio stream on success or <c>null</c> on failure; call
-    /// <see cref="GetError"/> for more information.</returns>
-    /// <threadsafety>It is safe to call this function from any thread.</threadsafety>
-    /// <since>This function is available since SDL 3.2.0.</since>
-    /// <seealso cref="CreateAudioStream(nint, nint)"/>
-    /// <seealso cref="PutAudioStreamData(nint, byte[], int)"/>
-    /// <seealso cref="GetAudioStreamData(nint, byte[], int)"/>
-    /// <seealso cref="GetAudioStreamAvailable"/>
-    /// <seealso cref="FlushAudioStream"/>
-    /// <seealso cref="ClearAudioStream"/>
-    /// <seealso cref="SetAudioStreamFormat(nint, nint, nint)"/>
-    /// <seealso cref="DestroyAudioStream"/>
-    public static IntPtr CreateAudioStream(in AudioSpec srcSpec, IntPtr dstSpec)
-    {
-        return CreateAudioStreamWithSrcSpecFunction(in srcSpec, dstSpec);
-    }
-
-
-    [ExcludeFromCodeCoverage]
-    [LibraryImport(SDLLibrary, EntryPoint = "SDL_CreateAudioStream"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-    private static partial IntPtr SDL_CreateAudioStream(IntPtr srcSpec, in AudioSpec dstSpec);
-    private delegate IntPtr CreateAudioStreamWithDstSpec(IntPtr srcSpec, in AudioSpec dstSpec);
-    private static CreateAudioStreamWithDstSpec CreateAudioStreamWithDstSpecFunction = SDL_CreateAudioStream;
-
-    /// <code>extern SDL_DECLSPEC SDL_AudioStream * SDLCALL SDL_CreateAudioStream(const SDL_AudioSpec *src_spec, const SDL_AudioSpec *dst_spec);</code>
-    /// <summary>
-    /// <para>Create a new audio stream.</para>
-    /// <para>SDL_AudioStream is an audio conversion interface. You push data as you have
-    /// it, and pull it when you need it; the stream will buffer data as needed.</para>
-    /// <para>Note that <c>srcSpec</c> or <c>dstSpec</c> may be <c>null</c>, but any attempts to put or
-    /// get data from an audio stream will fail until it has valid specs assigned
-    /// to both ends of the stream. Specs can be assigned later through
-    /// <see cref="SetAudioStreamFormat(nint, nint, nint)"/>, or binding the stream to an audio device (which
-    /// will set the format of only the input or output, depending on what kind of
-    /// device the stream was bound to).</para>
-    /// <para>Use <see cref="CreateAudioStream(nint, nint)"/> when either audio spec should be <c>null</c>.</para>
-    /// </summary>
-    /// <param name="srcSpec">the format details of the input audio.</param>
-    /// <param name="dstSpec">the format details of the output audio.</param>
-    /// <returns>a new audio stream on success or <c>null</c> on failure; call
-    /// <see cref="GetError"/> for more information.</returns>
-    /// <threadsafety>It is safe to call this function from any thread.</threadsafety>
-    /// <since>This function is available since SDL 3.2.0.</since>
-    /// <seealso cref="CreateAudioStream(nint, nint)"/>
-    /// <seealso cref="PutAudioStreamData(nint, byte[], int)"/>
-    /// <seealso cref="GetAudioStreamData(nint, byte[], int)"/>
-    /// <seealso cref="GetAudioStreamAvailable"/>
-    /// <seealso cref="FlushAudioStream"/>
-    /// <seealso cref="ClearAudioStream"/>
-    /// <seealso cref="SetAudioStreamFormat(nint, nint, nint)"/>
-    /// <seealso cref="DestroyAudioStream"/>
-    public static IntPtr CreateAudioStream(IntPtr srcSpec, in AudioSpec dstSpec)
-    {
-        return CreateAudioStreamWithDstSpecFunction(srcSpec, in dstSpec);
-    }
-
-    [ExcludeFromCodeCoverage]
-    [LibraryImport(SDLLibrary, EntryPoint = "SDL_CreateAudioStream"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     private static partial IntPtr SDL_CreateAudioStream(in AudioSpec srcSpec, in AudioSpec dstSpec);
     private delegate IntPtr CreateAudioStreamWithSpecsNative(in AudioSpec srcSpec, in AudioSpec dstSpec);
     private static CreateAudioStreamWithSpecsNative CreateAudioStreamWithSpecsNativeFunction = SDL_CreateAudioStream;
@@ -1019,6 +942,72 @@ public static partial class SDL
     public static IntPtr CreateAudioStream(in AudioSpec srcSpec, in AudioSpec dstSpec)
     {
         return CreateAudioStreamWithSpecsNativeFunction(in srcSpec, in dstSpec);
+    }
+
+
+    [ExcludeFromCodeCoverage]
+    [LibraryImport(SDLLibrary, EntryPoint = "SDL_CreateAudioStream"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
+    private static partial IntPtr SDL_CreateAudioStream(in AudioSpec srcSpec, IntPtr dstSpec);
+    private delegate IntPtr CreateAudioStreamWithSourceSpecAndDestinationPointerNative(in AudioSpec srcSpec, IntPtr dstSpec);
+    private static CreateAudioStreamWithSourceSpecAndDestinationPointerNative CreateAudioStreamWithSourceSpecAndDestinationPointerNativeFunction = SDL_CreateAudioStream;
+
+    /// <code>extern SDL_DECLSPEC SDL_AudioStream * SDLCALL SDL_CreateAudioStream(const SDL_AudioSpec *src_spec, const SDL_AudioSpec *dst_spec);</code>
+    /// <summary>
+    /// <para>Create a new audio stream.</para>
+    /// <para>SDL_AudioStream is an audio conversion interface. You push data as you have
+    /// it, and pull it when you need it; the stream will buffer data as needed.</para>
+    /// <para>Pass <c>IntPtr.Zero</c> for <c>dstSpec</c> to leave the output format unset.
+    /// Attempts to put or get data from the stream will fail until it has valid specs
+    /// assigned to both ends. Specs can be assigned later through
+    /// <see cref="SetAudioStreamFormat(nint, nint, nint)"/>, or binding the stream to an
+    /// audio device.</para>
+    /// </summary>
+    /// <param name="srcSpec">the format details of the input audio.</param>
+    /// <param name="dstSpec">the format details of the output audio, or <c>IntPtr.Zero</c>.</param>
+    /// <returns>a new audio stream on success or <c>null</c> on failure; call
+    /// <see cref="GetError"/> for more information.</returns>
+    /// <threadsafety>It is safe to call this function from any thread.</threadsafety>
+    /// <since>This function is available since SDL 3.2.0.</since>
+    /// <seealso cref="CreateAudioStream(nint, nint)"/>
+    /// <seealso cref="CreateAudioStream(nint, in AudioSpec)"/>
+    /// <seealso cref="CreateAudioStream(in AudioSpec, in AudioSpec)"/>
+    /// <seealso cref="SetAudioStreamFormat(nint, nint, nint)"/>
+    public static IntPtr CreateAudioStream(in AudioSpec srcSpec, IntPtr dstSpec)
+    {
+        return CreateAudioStreamWithSourceSpecAndDestinationPointerNativeFunction(in srcSpec, dstSpec);
+    }
+
+
+    [ExcludeFromCodeCoverage]
+    [LibraryImport(SDLLibrary, EntryPoint = "SDL_CreateAudioStream"), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
+    private static partial IntPtr SDL_CreateAudioStream(IntPtr srcSpec, in AudioSpec dstSpec);
+    private delegate IntPtr CreateAudioStreamWithSourcePointerAndDestinationSpecNative(IntPtr srcSpec, in AudioSpec dstSpec);
+    private static CreateAudioStreamWithSourcePointerAndDestinationSpecNative CreateAudioStreamWithSourcePointerAndDestinationSpecNativeFunction = SDL_CreateAudioStream;
+
+    /// <code>extern SDL_DECLSPEC SDL_AudioStream * SDLCALL SDL_CreateAudioStream(const SDL_AudioSpec *src_spec, const SDL_AudioSpec *dst_spec);</code>
+    /// <summary>
+    /// <para>Create a new audio stream.</para>
+    /// <para>SDL_AudioStream is an audio conversion interface. You push data as you have
+    /// it, and pull it when you need it; the stream will buffer data as needed.</para>
+    /// <para>Pass <c>IntPtr.Zero</c> for <c>srcSpec</c> to leave the input format unset.
+    /// Attempts to put or get data from the stream will fail until it has valid specs
+    /// assigned to both ends. Specs can be assigned later through
+    /// <see cref="SetAudioStreamFormat(nint, nint, nint)"/>, or binding the stream to an
+    /// audio device.</para>
+    /// </summary>
+    /// <param name="srcSpec">the format details of the input audio, or <c>IntPtr.Zero</c>.</param>
+    /// <param name="dstSpec">the format details of the output audio.</param>
+    /// <returns>a new audio stream on success or <c>null</c> on failure; call
+    /// <see cref="GetError"/> for more information.</returns>
+    /// <threadsafety>It is safe to call this function from any thread.</threadsafety>
+    /// <since>This function is available since SDL 3.2.0.</since>
+    /// <seealso cref="CreateAudioStream(nint, nint)"/>
+    /// <seealso cref="CreateAudioStream(in AudioSpec, nint)"/>
+    /// <seealso cref="CreateAudioStream(in AudioSpec, in AudioSpec)"/>
+    /// <seealso cref="SetAudioStreamFormat(nint, nint, nint)"/>
+    public static IntPtr CreateAudioStream(IntPtr srcSpec, in AudioSpec dstSpec)
+    {
+        return CreateAudioStreamWithSourcePointerAndDestinationSpecNativeFunction(srcSpec, in dstSpec);
     }
 
 
