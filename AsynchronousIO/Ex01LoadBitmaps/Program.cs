@@ -1,11 +1,10 @@
 ﻿/*
-* This example code creates an SDL window and renderer, and then clears the
-* window to a different color every frame, so you'll effectively get a window
-* that's smoothly fading between colors.
-*
-* This code is public domain. Feel free to use it for any purpose!
-* This code is a port of the official SDL3 examples
-*/
+ * This example code loads a bitmap with asynchronous i/o and renders it.
+ *
+ * This code is public domain. Feel free to use it for any purpose!
+ */
+using System.Runtime.InteropServices;
+
 internal class Program
 {
     #region Main
@@ -43,6 +42,18 @@ internal class Program
     // These variables hold the memory addresses of the window and the renderer.
     public static IntPtr window = IntPtr.Zero;
     public static IntPtr renderer = IntPtr.Zero;
+    public static IntPtr queue = IntPtr.Zero;
+
+    public const int TotalTexture = 4;
+    public static string[] pngs = ["sample.png", "gamepad_front.png", "speaker.png", "icon2x.png"];
+    public static IntPtr[] textures = new IntPtr[TotalTexture];
+    public static FRect[] textureRects =
+    [
+        new(){X = 116, Y = 156, W = 408, H = 167},
+        new(){X = 20, Y = 200, W = 96, H = 60},
+        new(){X = 525, Y = 180, W = 96, H = 96},
+        new(){X = 288, Y = 375, W = 64, H = 64},
+    ];
     #endregion
 
 
@@ -50,22 +61,39 @@ internal class Program
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
-        SetAppMetadata("Example Renderer Clear", "1.0", "com.example.renderer-clear");
+        int i;
 
         if (!Init(InitFlags.Video))
         {
-            Log($"Couldn't initialize SDL: {GetError()}");
+            ShowSimpleMessageBox(MessageBoxFlags.Error, "Couldn't initialize SDL!", GetError(), IntPtr.Zero);
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/clear", 640, 480, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/asyncio/load-bitmaps", 640, 480, WindowFlags.Resizable, out window, out renderer))
         {
-            Log($"Couldn't create window/renderer: {GetError()}");
+            ShowSimpleMessageBox(MessageBoxFlags.Error, "Couldn't create window/renderer!", GetError(), IntPtr.Zero);
             return AppResult.Failure;
         }
-
         SetRenderLogicalPresentation(renderer, 640, 480, RendererLogicalPresentation.Letterbox);
 
+        queue = CreateAsyncIOQueue();
+        if (queue == IntPtr.Zero)
+        {
+            ShowSimpleMessageBox(MessageBoxFlags.Error, "Couldn't create async i/o queue!", GetError(), IntPtr.Zero);
+            return AppResult.Failure;
+        }
+
+        // Load some .png files asynchronously from wherever the app is being run from, put them in the same queue.
+        for (i = 0; i < pngs.Length; i++)
+        {
+            string path = GetBasePath() + "Assets/" + pngs[i];  // build a string of the full file path
+
+            GCHandle handle = GCHandle.Alloc(pngs[i]);
+            IntPtr userdata = GCHandle.ToIntPtr(handle);
+
+            // you should check for failure, but we'll just go on without files here.
+            LoadFileAsync(path, queue, userdata);  // attach the filename as app-specific data, so we can see it later.
+        }
         return AppResult.Continue;  // carry on with the program!
     }
     #endregion
@@ -89,19 +117,55 @@ internal class Program
     static AppResult AppIterate(nint appstate)
     {
         Delay(6);
-        double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
+        AsyncIOOutcome outcome;
+        int i;
 
-        // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
-        float red = (float)(0.5f + 0.5f * Math.Sin(now));
-        float green = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 2 / 3));
-        float blue = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 4 / 3));
+        if (GetAsyncIOResult(queue, out outcome))
+        {   // a .png file load has finished?
+            if (outcome.Result == AsyncIOResult.Complete)
+            {
+                GCHandle handle = GCHandle.FromIntPtr(outcome.Userdata);
+                string userdata = (string)handle.Target!;
 
-        SetRenderDrawColorFloat(renderer, red, green, blue, 1.0f);  // new color, full alpha
+                // this might be _any_ of the pngs; they might finish loading in any order.
+                for (i = 0; i < pngs.Length; i++)
+                {
+                    // Original C example: this doesn't need a strcmp because we gave the pointer from this array to SDL_LoadFileAsync
+                    // C# Example: here were are using a string comparison for it it easier to do in C# than comparing pointer
+                    if (userdata == pngs[i])
+                    {
+                        break;
+                    }
+                }
 
-        // clear the window to the draw color.
+                handle.Free();
+
+                if (i < pngs.Length)
+                {   // (just in case.)
+                    IntPtr surfacePtr = LoadPNGIO(IOFromConstMem(outcome.Buffer, (UIntPtr)outcome.BytesTransferred), true);
+                    if (surfacePtr != IntPtr.Zero)
+                    {   // the renderer is not multithreaded, so create the texture here once the data loads.
+                        textures[i] = CreateTextureFromSurface(renderer, surfacePtr);
+                        if (textures[i] == IntPtr.Zero)
+                        {
+                            ShowSimpleMessageBox(MessageBoxFlags.Error, "Couldn't create texture!", GetError(), IntPtr.Zero);
+                            return AppResult.Failure;
+                        }
+                        DestroySurface(surfacePtr);
+                    }
+                }
+            }
+            Free(outcome.Buffer);
+        }
+
+        SetRenderDrawColor(renderer, 0, 0, 0, 255);
         RenderClear(renderer);
 
-        // put the newly-cleared rendering on the screen.
+        for (i = 0; i < textures.Length; i++)
+        {
+            RenderTexture(renderer, textures[i], IntPtr.Zero, in textureRects[i]);
+        }
+
         RenderPresent(renderer);
 
         return AppResult.Continue;  // carry on with the program!
@@ -113,6 +177,14 @@ internal class Program
     // This function runs once at shutdown.
     static void AppQuit(nint appstate, AppResult result)
     {
+        int i;
+
+        DestroyAsyncIOQueue(queue);
+
+        for (i = 0; i < textures.Length; i++)
+        {
+            DestroyTexture(textures[i]);
+        }
         // SDL will clean up the window/renderer for us.
     }
     #endregion
