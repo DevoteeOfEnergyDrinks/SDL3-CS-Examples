@@ -1,11 +1,8 @@
 ﻿/*
-* This example code creates an SDL window and renderer, and then clears the
-* window to a different color every frame, so you'll effectively get a window
-* that's smoothly fading between colors.
-*
-* This code is public domain. Feel free to use it for any purpose!
-* This code is a port of the official SDL3 examples
-*/
+ * This example code reports power status (plugged in, battery level, etc).
+ *
+ * This code is public domain. Feel free to use it for any purpose!
+ */
 internal class Program
 {
     #region Main
@@ -50,7 +47,7 @@ internal class Program
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
-        SetAppMetadata("Example Renderer Clear", "1.0", "com.example.renderer-clear");
+        SetAppMetadata("Example Misc Power", "1.0", "com.example.misc-power");
 
         if (!Init(InitFlags.Video))
         {
@@ -58,12 +55,11 @@ internal class Program
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/clear", 640, 480, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/misc/power", 640, 480, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
-
         SetRenderLogicalPresentation(renderer, 640, 480, RendererLogicalPresentation.Letterbox);
 
         return AppResult.Continue;  // carry on with the program!
@@ -89,19 +85,113 @@ internal class Program
     static AppResult AppIterate(nint appstate)
     {
         Delay(6);
-        double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
+        FRect frame = new() { X = 100, Y = 200, W = 440, H = 80 };  // the percentage bar dimensions.
 
-        // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
-        float red = (float)(0.5f + 0.5f * Math.Sin(now));
-        float green = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 2 / 3));
-        float blue = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 4 / 3));
+        // Query for battery info
+        int seconds = 0;
+        int percent = 0;
+        PowerState state = GetPowerInfo(out seconds, out percent);
 
-        SetRenderDrawColorFloat(renderer, red, green, blue, 1.0f);  // new color, full alpha
+        // We set up different drawing details for each power state, then
+        // run it all through the same drawing code.
+        int clearR = 0, clearG = 0, clearB = 0; // clear window to this color.
+        int textR = 255, textG = 255, textB = 255; // draw messages in this color.
+        int frameR = 255, frameG = 255, frameB = 255; // draw a percentage bar frame in this color.
+        int barR = 0, barG = 0, barB = 0;  // draw a percentage bar in this color.
+        string message = "";
+        string message2 = "";
 
-        // clear the window to the draw color.
+        switch (state)
+        {
+            case PowerState.Error:
+                message2 = "ERROR GETTING POWER STATE";
+                message = GetError();
+                clearR = 255;  // red background
+                break;
+
+            default:  // in case this does something unexpected later, treat it as unknown.
+            case PowerState.Unknown:
+                message = "Power state is unknown.";
+                clearR = clearB = clearG = 50;  // grey background
+                break;
+
+            case PowerState.OnBattery:
+                message = "Running on battery.";
+                barR = 255;  // draw in red
+                break;
+
+            case PowerState.NoBattery:
+                message = "Plugged in, no battery available.";
+                clearG = 50;  // green background
+                break;
+
+            case PowerState.Charging:
+                message = "Charging.";
+                barB = barG = 255;  // draw in cyan 
+                break;
+
+            case PowerState.Charged:
+                message = "Charged.";
+                barG = 255;  // draw in green
+                break;
+        }
+
+        SetRenderDrawColor(renderer, (byte)clearR, (byte)clearG, (byte)clearB, 255);
         RenderClear(renderer);
 
-        // put the newly-cleared rendering on the screen.
+        if (percent >= 0)
+        {
+            float x, y;
+            FRect percentRect;
+            string remainingString;
+            string messageBuffer;
+
+            percentRect = frame;
+            percentRect.W *= percent / 100.0f;
+
+            if (seconds < 0)
+            {
+                remainingString = "unknown time";
+            }
+            else
+            {
+                int hours, minutes;
+                hours = seconds / (60 * 60);
+                seconds -= hours * (60 * 60);
+                minutes = seconds / 60;
+                seconds -= minutes * 60;
+                remainingString = $"{hours:00}:{minutes:00}:{seconds:00}";
+            }
+
+            messageBuffer = $"Battery: {percent,3} percent, {remainingString} remaining";
+            x = frame.X + ((frame.W - (DebugTextFontCharacterSize * messageBuffer.Length)) / 2.0f);
+            y = frame.Y + frame.H + DebugTextFontCharacterSize;
+
+            SetRenderDrawColor(renderer, (byte)barR, (byte)barG, (byte)barB, 255);  // draw percent bar.
+            RenderFillRect(renderer, percentRect);
+            SetRenderDrawColor(renderer, (byte)frameR, (byte)frameG, (byte)frameB, 255);  // draw frame on top of bar.
+            RenderRect(renderer, frame);
+            SetRenderDrawColor(renderer, (byte)textR, (byte)textG, (byte)textB, 255);
+            RenderDebugText(renderer, x, y, messageBuffer);  // draw text about battery level
+        }
+
+        if (!string.IsNullOrEmpty(message))
+        {
+            float x = frame.X + ((frame.W - (DebugTextFontCharacterSize * message.Length)) / 2.0f);
+            float y = frame.Y - (DebugTextFontCharacterSize * 2);
+            SetRenderDrawColor(renderer, (byte)textR, (byte)textG, (byte)textB, 255);
+            RenderDebugText(renderer, x, y, message);
+        }
+
+        if (!string.IsNullOrEmpty(message2))
+        {
+            float x = frame.X + ((frame.W - (DebugTextFontCharacterSize * message2.Length)) / 2.0f);
+            float y = frame.Y - (DebugTextFontCharacterSize * 4);
+            SetRenderDrawColor(renderer, (byte)textR, (byte)textG, (byte)textB, 255);
+            RenderDebugText(renderer, x, y, message2);
+        }
+
+        // put the new rendering on the screen.
         RenderPresent(renderer);
 
         return AppResult.Continue;  // carry on with the program!
