@@ -1,11 +1,12 @@
 ﻿/*
-* This example code creates an SDL window and renderer, and then clears the
-* window to a different color every frame, so you'll effectively get a window
-* that's smoothly fading between colors.
-*
-* This code is public domain. Feel free to use it for any purpose!
-* This code is a port of the official SDL3 examples
-*/
+ * This example code reads pen/stylus input and draws lines. Darker lines
+ * for harder pressure.
+ *
+ * SDL can track multiple pens, but for simplicity here, this assumes any
+ * pen input we see was from one device.
+ *
+ * This code is public domain. Feel free to use it for any purpose!
+ */
 internal class Program
 {
     #region Main
@@ -43,6 +44,12 @@ internal class Program
     // These variables hold the memory addresses of the window and the renderer.
     public static IntPtr window = IntPtr.Zero;
     public static IntPtr renderer = IntPtr.Zero;
+    public static IntPtr renderTarget = IntPtr.Zero;
+    public static float pressure = 0.0f;
+    public static float previousTouchX = -1.0f;
+    public static float previousTouchY = -1.0f;
+    public static float tiltX = 0.0f;
+    public static float tiltY = 0.0f;
     #endregion
 
 
@@ -50,7 +57,10 @@ internal class Program
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
-        SetAppMetadata("Example Renderer Clear", "1.0", "com.example.renderer-clear");
+        int width;
+        int height;
+
+        SetAppMetadata("Example Pen Drawing Lines", "1.0", "com.example.pen-drawing-lines");
 
         if (!Init(InitFlags.Video))
         {
@@ -58,13 +68,30 @@ internal class Program
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/clear", 640, 480, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/pen/drawing-lines", 640, 480, 0, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
 
-        SetRenderLogicalPresentation(renderer, 640, 480, RendererLogicalPresentation.Letterbox);
+        // we make a render target so we can draw lines to it and not have to record and redraw every pen stroke each frame.
+        // Instead rendering a frame for us is a single texture draw.
+
+        // make sure the render target matches output size (for hidpi displays, etc) so drawing matches the pen's position on a tablet display.
+        GetRenderOutputSize(renderer, out width, out height);
+        renderTarget = CreateTexture(renderer, PixelFormat.RGBA8888, TextureAccess.Target, width, height);
+        if (renderTarget == IntPtr.Zero)
+        {
+            Log($"Couldn't create render target: {GetError()}");
+            return AppResult.Failure;
+        }
+
+        // just blank the render target to gray to start.
+        SetRenderTarget(renderer, renderTarget);
+        SetRenderDrawColor(renderer, 100, 100, 100, byte.MaxValue);
+        RenderClear(renderer);
+        SetRenderTarget(renderer, IntPtr.Zero);
+        SetRenderDrawBlendMode(renderer, BlendMode.Blend);
 
         return AppResult.Continue;  // carry on with the program!
     }
@@ -79,6 +106,43 @@ internal class Program
         {
             return AppResult.Success;   // end the program, reporting success to the OS.
         }
+        // There are several events that track the specific stages of pen activity,
+        // but we're only going to look for motion and pressure, for simplicity.
+        if (evt.Type == (uint)EventType.PenMotion)
+        {
+            // you can check for when the pen is touching, but if pressure > 0.0f, it's definitely touching!
+            if (pressure > 0.0f)
+            {
+                if (previousTouchX >= 0.0f)
+                {   // only draw if we're moving while touching
+                    // draw with the alpha set to the pressure, so you effectively get a fainter line for lighter presses.
+                    SetRenderTarget(renderer, renderTarget);
+                    SetRenderDrawColorFloat(renderer, 0, 0, 0, pressure);
+                    RenderLine(renderer, previousTouchX, previousTouchY, evt.PMotion.X, evt.PMotion.Y);
+                }
+                previousTouchX = evt.PMotion.X;
+                previousTouchY = evt.PMotion.Y;
+            }
+            else
+            {
+                previousTouchX = previousTouchY = -1.0f;
+            }
+        }
+        else if (evt.Type == (uint)EventType.PenAxis)
+        {
+            if (evt.PAxis.Axis == PenAxis.Pressure)
+            {
+                pressure = evt.PAxis.Value;  // remember new pressure for later draws.
+            }
+            else if (evt.PAxis.Axis == PenAxis.XTilt)
+            {
+                tiltX = evt.PAxis.Value;
+            }
+            else if (evt.PAxis.Axis == PenAxis.YTilt)
+            {
+                tiltY = evt.PAxis.Value;
+            }
+        }
         return AppResult.Continue;  // carry on with the program!
     }
     #endregion
@@ -89,19 +153,15 @@ internal class Program
     static AppResult AppIterate(nint appstate)
     {
         Delay(6);
-        double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
-
-        // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
-        float red = (float)(0.5f + 0.5f * Math.Sin(now));
-        float green = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 2 / 3));
-        float blue = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 4 / 3));
-
-        SetRenderDrawColorFloat(renderer, red, green, blue, 1.0f);  // new color, full alpha
-
-        // clear the window to the draw color.
-        RenderClear(renderer);
-
-        // put the newly-cleared rendering on the screen.
+        string debugText;
+        
+        // make sure we're drawing to the window and not the render target */
+        SetRenderTarget(renderer, IntPtr.Zero);
+        SetRenderDrawColor(renderer, 0, 0, 0, byte.MaxValue);
+        RenderClear(renderer);  // just in case.
+        RenderTexture(renderer, renderTarget, IntPtr.Zero, IntPtr.Zero);
+        debugText = $"Tilt: {tiltX} {tiltY}";
+        RenderDebugText(renderer, 0, 8, debugText);
         RenderPresent(renderer);
 
         return AppResult.Continue;  // carry on with the program!
@@ -113,6 +173,7 @@ internal class Program
     // This function runs once at shutdown.
     static void AppQuit(nint appstate, AppResult result)
     {
+        DestroyTexture(renderTarget);
         // SDL will clean up the window/renderer for us.
     }
     #endregion
