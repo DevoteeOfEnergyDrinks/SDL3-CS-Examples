@@ -24,6 +24,10 @@
     <Project Path="Input/Ex05GamepadRumble/Ex05GamepadRumble.csproj" />
   </Folder>
   
+  <Folder Name="/Pen/">
+    <Project Path="Pen/Ex01DrawingLines/Ex01DrawingLines.csproj" />
+  </Folder>
+  
   <Folder Name="/Renderer/">
     <Project Path="Renderer/Ex01Clear/Ex01Clear.csproj" />
     <Project Path="Renderer/Ex02Primitives/Ex02Primitives.csproj" />
