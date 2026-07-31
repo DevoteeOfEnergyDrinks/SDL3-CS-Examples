@@ -15,6 +15,13 @@
   <Folder Name="/Camera/">
     <Project Path="Camera/Ex01ReadAndDraw/Ex01ReadAndDraw.csproj" />
   </Folder>
+  
+  <Folder Name="/Demo/">
+    <Project Path="Demo/Ex01Snake/Ex01Snake.csproj" />
+    <Project Path="Demo/Ex02WoodenEye008/Ex02WoodenEye008.csproj" />
+    <Project Path="Demo/Ex03InfiniteMonkeys/Ex03InfiniteMonkeys.csproj" />
+    <Project Path="Demo/Ex04BytePusher/Ex04BytePusher.csproj" />
+  </Folder>
 
   <Folder Name="/Input/">
     <Project Path="Input/Ex01JoystickPolling/Ex01JoystickPolling.csproj" />
