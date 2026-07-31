@@ -1,11 +1,8 @@
 ﻿/*
-* This example code creates an SDL window and renderer, and then clears the
-* window to a different color every frame, so you'll effectively get a window
-* that's smoothly fading between colors.
-*
-* This code is public domain. Feel free to use it for any purpose!
-* This code is a port of the official SDL3 examples
-*/
+ * This example code reports the currently selected locales.
+ *
+ * This code is public domain. Feel free to use it for any purpose!
+ */
 internal class Program
 {
     #region Main
@@ -50,7 +47,7 @@ internal class Program
     // This function runs once at startup.
     static AppResult AppInit(ref nint appstate, int argc, string[]? argv)
     {
-        SetAppMetadata("Example Renderer Clear", "1.0", "com.example.renderer-clear");
+        SetAppMetadata("Example Misc Locale", "1.0", "com.example.misc-locale");
 
         if (!Init(InitFlags.Video))
         {
@@ -58,12 +55,11 @@ internal class Program
             return AppResult.Failure;
         }
 
-        if (!CreateWindowAndRenderer("examples/renderer/clear", 640, 480, WindowFlags.Resizable, out window, out renderer))
+        if (!CreateWindowAndRenderer("examples/misc/locale", 640, 480, WindowFlags.Resizable, out window, out renderer))
         {
             Log($"Couldn't create window/renderer: {GetError()}");
             return AppResult.Failure;
         }
-
         SetRenderLogicalPresentation(renderer, 640, 480, RendererLogicalPresentation.Letterbox);
 
         return AppResult.Continue;  // carry on with the program!
@@ -89,19 +85,47 @@ internal class Program
     static AppResult AppIterate(nint appstate)
     {
         Delay(6);
-        double now = GetTicks() / 1000.0f;  // convert from milliseconds to seconds.
+        FRect frame = new() { X = 0, Y = 0, W = 640, H = 480 };
+        Locale[]? locales;
+        string message = "";
+        int count, i;
+        float x, y;
 
-        // choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly.
-        float red = (float)(0.5f + 0.5f * Math.Sin(now));
-        float green = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 2 / 3));
-        float blue = (float)(0.5f + 0.5f * Math.Sin(now + Math.PI * 4 / 3));
-
-        SetRenderDrawColorFloat(renderer, red, green, blue, 1.0f);  // new color, full alpha
-
-        // clear the window to the draw color.
+        SetRenderDrawColor(renderer, 0, 0, 0, 255);
         RenderClear(renderer);
 
-        // put the newly-cleared rendering on the screen.
+        locales = GetPreferredLocales(out count);
+        if (locales == null)
+        {
+            x = frame.X + ((frame.W - (DebugTextFontCharacterSize * message.Length)) / 2.0f);
+            y = frame.Y;
+            SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            RenderDebugText(renderer, x, y, message);
+        }
+        else
+        {
+            message = $"Locales, in order of preference ({count} total:)";
+
+            x = frame.X + ((frame.W - (DebugTextFontCharacterSize * message.Length)) / 2.0f);
+            y = frame.Y;
+            SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            RenderDebugText(renderer, x, y, message);
+
+            for (i = 0; i < count; ++i)
+            {
+                Locale locale = locales![i];
+                string? country = locale.Country;
+
+                message = $" - {locale.Language}{(string.IsNullOrEmpty(country) ? "_" : "")}{country}";
+  
+                x = frame.X + ((frame.W - (DebugTextFontCharacterSize * message.Length)) / 2.0f);
+                y = frame.Y + ((DebugTextFontCharacterSize * 2) * (i + 1));
+                SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                RenderDebugText(renderer, x, y, message);
+            }
+        }
+
+        // put the new rendering on the screen.
         RenderPresent(renderer);
 
         return AppResult.Continue;  // carry on with the program!
